@@ -161,6 +161,9 @@ class Setting:
     ScrollInitSpeed = SettingValue("ReadSetting", 400, False)
     ScrollTime = SettingValue("ReadSetting", 100, False)
     PreDownWaifu2x = SettingValue("ReadSetting", 1, False)
+    PicturePrefetchCount = SettingValue("ReadSetting", 3, False)
+    CrossChapterPrefetch = SettingValue("ReadSetting", 1, False)
+    PrefetchWholeChapter = SettingValue("ReadSetting", 0, False)
     IsOpenOpenGL = SettingValue("ReadSetting", 0, True)
 
     # 批量超分

@@ -7,7 +7,7 @@ from functools import partial
 from PySide6 import QtWidgets
 from PySide6.QtCore import QSettings, Qt, QSize, QUrl, QFile, QTranslator, QLocale, QEvent
 from PySide6.QtGui import QDesktopServices, QFont, QFontDatabase
-from PySide6.QtWidgets import QFileDialog, QScroller, QScrollerProperties
+from PySide6.QtWidgets import QFileDialog, QScroller, QScrollerProperties, QToolTip
 
 from config import config
 from config.setting import Setting, SettingValue
@@ -55,6 +55,8 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         self.downAuto.clicked.connect(partial(self.CheckButtonEvent, Setting.DownloadAuto, self.downAuto))
         # self.titleBox.clicked.connect(partial(self.CheckButtonEvent, Setting.IsUseTitleBar, self.titleBox))
         self.openglBox.clicked.connect(partial(self.CheckButtonEvent, Setting.IsOpenOpenGL, self.openglBox))
+        self.crossChapterPrefetch.clicked.connect(partial(self.CheckButtonEvent, Setting.CrossChapterPrefetch, self.crossChapterPrefetch))
+        self.prefetchWholeChapter.clicked.connect(partial(self.CheckButtonEvent, Setting.PrefetchWholeChapter, self.prefetchWholeChapter))
         self.grabGestureBox.clicked.connect(partial(self.CheckButtonEvent, Setting.IsGrabGesture, self.grabGestureBox))
         # self.isShowClose.clicked.connect(partial(self.CheckButtonEvent, Setting.IsNotShowCloseTip, self.isShowClose))
 
@@ -96,8 +98,10 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         self.downScale.valueChanged.connect(partial(self.SpinBoxEvent, Setting.DownloadScale))
         self.lookMaxBox.valueChanged.connect(partial(self.SpinBoxEvent, Setting.LookMaxNum))
         self.coverMaxBox.valueChanged.connect(partial(self.SpinBoxEvent, Setting.CoverMaxNum))
+        self.prefetchCount.valueChanged.connect(partial(self.SpinBoxEvent, Setting.PicturePrefetchCount))
 
         self.generalButton.clicked.connect(partial(self.MoveToLabel, self.generalLabel))
+        self.prefetchButton.clicked.connect(partial(self.MoveToLabel, self.prefetchLabel))
         # self.readButton.clicked.connect(partial(self.MoveToLabel, self.readLabel))
         self.proxyButton.clicked.connect(partial(self.MoveToLabel, self.proxyLabel))
         self.waifu2xButton.clicked.connect(partial(self.MoveToLabel, self.waifu2xLabel))
@@ -117,6 +121,16 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
 
         self.msgLabel.setVisible(False)
 
+        self.prefetchHelpLabels = (
+            self.prefetchCountHelp,
+            self.crossChapterPrefetchHelp,
+            self.prefetchWholeChapterHelp,
+        )
+        for label in self.prefetchHelpLabels:
+            label.setMouseTracking(True)
+            label.setAttribute(Qt.WA_Hover, True)
+            label.installEventFilter(self)
+
         if Setting.IsGrabGesture.value:
             QScroller.grabGesture(self.scrollArea, QScroller.LeftMouseButtonGesture)
             propertiesOne = QScroller.scroller(self).scrollerProperties()
@@ -128,12 +142,15 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         #     QScroller.grabGesture(self.scrollArea, QScroller.LeftMouseButtonGesture)
     #     self.grabGestureBox.installEventFilter(self)
     #
-    # def eventFilter(self, watched, event) -> bool:
-    #     if (watched == self.grabGestureBox and event.type() == QEvent.Enter):
-    #         QScroller.ungrabGesture(self.scrollArea)
-    #     elif (watched == self.grabGestureBox and event.type() == QEvent.Leave):
-    #         QScroller.grabGesture(self.scrollArea, QScroller.LeftMouseButtonGesture)
-    #     return super(self.__class__, self).eventFilter(watched, event)
+    def eventFilter(self, watched, event) -> bool:
+        if watched in getattr(self, "prefetchHelpLabels", ()):
+            if event.type() in (QEvent.Enter, QEvent.HoverEnter, QEvent.ToolTip):
+                position = watched.mapToGlobal(watched.rect().bottomLeft())
+                QToolTip.showText(position, watched.toolTip(), watched)
+                return event.type() == QEvent.ToolTip
+            if event.type() in (QEvent.Leave, QEvent.HoverLeave):
+                QToolTip.hideText()
+        return super(self.__class__, self).eventFilter(watched, event)
 
     def MoveToLabel(self, label):
         p = label.pos()
@@ -265,6 +282,9 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         self.chatProxy.setChecked(Setting.ChatProxy.value)
         # self.titleBox.setChecked(Setting.IsUseTitleBar.value)
         self.openglBox.setChecked(Setting.IsOpenOpenGL.value)
+        self.prefetchCount.setValue(Setting.PicturePrefetchCount.value)
+        self.crossChapterPrefetch.setChecked(Setting.CrossChapterPrefetch.value)
+        self.prefetchWholeChapter.setChecked(Setting.PrefetchWholeChapter.value)
         self.grabGestureBox.setChecked(Setting.IsGrabGesture.value)
         # self.isShowClose.setChecked(Setting.IsNotShowCloseTip.value)
         for index in range(self.encodeSelect.count()):

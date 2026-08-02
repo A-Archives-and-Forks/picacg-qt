@@ -20,6 +20,9 @@ from view.download.download_item import DownloadItem, DownloadEpsItem
 from view.read.read_enum import ReadMode, QtFileData
 from view.read.read_frame import ReadFrame
 
+# 每个图片预取队列最多同时下载 5 张，避免较大的预取范围占满下载线程和网络连接池。
+PICTURE_PREFETCH_CONCURRENCY = 5
+
 
 class ReadView(QtWidgets.QWidget, QtTaskBase):
 
@@ -68,6 +71,12 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         self.isLocal = False
         self._cacheBook = None
         self.lastPath = ""
+        self._prefetchChapter = None
+        self._prefetchCount = 0
+        self._prefetchNextIndex = 0
+        self._prefetchActive = 0
+        self._prefetchReady = False
+        self._prefetchChapterMax = 0
         # QtOwner().owner.WindowsSizeChange.connect(self.qtTool.ClearQImage)
 
     @property
@@ -211,6 +220,12 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         self.curIndex = 0
         self.frame.oldValue = 0
         self.pictureData.clear()
+        self._prefetchChapter = None
+        self._prefetchCount = 0
+        self._prefetchNextIndex = 0
+        self._prefetchActive = 0
+        self._prefetchReady = False
+        self._prefetchChapterMax = 0
         QtOwner().SetSubTitle("")
         self.ClearTask()
         self.ClearDownload()
@@ -322,7 +337,12 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         if not self.maxPic:
             return
 
-        preLoadList = list(range(self.curIndex, self.curIndex + config.PreLoading))
+        # The setting counts pages after the current page. Keep the current page
+        # in memory separately, so page 10 + count 10 means pages 11 through 20.
+        prefetchEnd = self.curIndex + Setting.PicturePrefetchCount.value + 1
+        if Setting.PrefetchWholeChapter.value:
+            prefetchEnd = self.maxPic
+        preLoadList = list(range(self.curIndex, prefetchEnd))
         preQImage = list(range(self.curIndex, self.curIndex + config.PreLook))
 
         # 预加载上一页
@@ -345,16 +365,17 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         if not self.bookId:
             return
 
+        activeDownloads = sum(1 for i in preLoadList
+                              if i in self.pictureData
+                              and self.pictureData[i].state == QtFileData.Downloading)
         for i in preLoadList:
             if i >= self.maxPic or i < 0:
                 continue
 
             p = self.pictureData.get(i)
-            if not p:
+            if not p and activeDownloads < PICTURE_PREFETCH_CONCURRENCY:
                 self.AddDownload(i)
-                break
-            elif p.state == p.Downloading or p.state == p.DownloadReset:
-                break
+                activeDownloads += 1
 
         for i in preLoadList:
             if i >= self.maxPic or i < 0:
@@ -395,6 +416,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
                 p.cacheWaifu2xImageTaskId = 0
             p.cacheImage = None
             p.cacheWaifu2xImage = None
+        self.CheckCrossChapterPrefetch()
         pass
 
     def StartLoadPicUrlBack(self, raw, v):
@@ -496,7 +518,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         if index == self.curIndex:
             self.ShowImg(index)
         elif self.stripModel in [ReadMode.UpDown, ReadMode.RightLeftScroll,
-                                 ReadMode.LeftRightScroll] and self.curIndex < index <= self.curIndex + config.PreLoading - 1:
+                                 ReadMode.LeftRightScroll] and self._IsPrefetchIndex(index):
             self.ShowImg(index)
         elif ReadMode.isDouble(self.stripModel) and self.curIndex < index <= self.curIndex + 1:
             self.ShowImg(index)
@@ -782,7 +804,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
             self.frame.waifu2xProcess.hide()
             # self.ShowImg()
         elif self.stripModel in [ReadMode.UpDown, ReadMode.RightLeftScroll,
-                                 ReadMode.LeftRightScroll] and self.curIndex < index <= self.curIndex + config.PreLoading - 1:
+                                 ReadMode.LeftRightScroll] and self._IsPrefetchIndex(index):
             # self.ShowOtherPage()
             self.CheckLoadPicture()
         else:
@@ -800,7 +822,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         if index == self.curIndex:
             self.ShowImg(index)
         elif self.stripModel in [ReadMode.UpDown, ReadMode.RightLeftScroll,
-                                 ReadMode.LeftRightScroll] and self.curIndex < index <= self.curIndex + config.PreLoading - 1:
+                                 ReadMode.LeftRightScroll] and self._IsPrefetchIndex(index):
             self.ShowImg(index)
         elif ReadMode.isDouble(self.stripModel) and self.curIndex < index <= self.curIndex + 1:
             self.ShowImg(index)
@@ -858,10 +880,88 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         if i not in self.pictureData:
             data = QtFileData()
             self.pictureData[i] = data
+        else:
+            # A retried download still occupies one of the five queue slots.
+            self.pictureData[i].state = QtFileData.Downloading
         if i == self.curIndex:
             self.qtTool.SetData(state=self.pictureData[i].state)
         # self.CheckClearProcess(i)
         self.CheckSetProcess()
+
+    def _IsPrefetchIndex(self, index):
+        if not self.curIndex < index < self.maxPic:
+            return False
+        if Setting.PrefetchWholeChapter.value:
+            return True
+        return index <= self.curIndex + Setting.PicturePrefetchCount.value
+
+    def CheckCrossChapterPrefetch(self):
+        """Use any unused look-ahead slots to warm the next chapter's cache."""
+        if (not Setting.CrossChapterPrefetch.value or self.isLocal or self.isOffline
+                or not self.bookId or not self.maxPic):
+            return
+
+        pagesAfterCurrent = self.maxPic - self.curIndex - 1
+        count = Setting.PicturePrefetchCount.value - pagesAfterCurrent
+        nextEps = self.epsId + 1
+        book = BookMgr().GetBook(self.bookId)
+        if count <= 0 or not book or nextEps >= book.epsCount:
+            return
+
+        key = (self.bookId, nextEps)
+        if self._prefetchChapter == key:
+            self._prefetchCount = max(self._prefetchCount, count)
+            if self._prefetchReady:
+                self._prefetchCount = min(self._prefetchCount, self._prefetchChapterMax)
+            if self._prefetchReady:
+                self._PumpCrossChapterPrefetch(key)
+            return
+
+        self._prefetchChapter = key
+        self._prefetchCount = count
+        self._prefetchNextIndex = 0
+        self._prefetchActive = 0
+        self._prefetchReady = False
+        self._prefetchChapterMax = 0
+        self.AddDownloadBook(self.bookId, nextEps, 0,
+                             statusBack=self._StartCrossChapterPrefetch,
+                             backParam=key, isInit=True)
+
+    def _StartCrossChapterPrefetch(self, raw, key):
+        if key != self._prefetchChapter or raw.get("st") != Status.Ok:
+            if key == self._prefetchChapter:
+                self._prefetchChapter = None
+            return
+        self._prefetchChapterMax = raw.get("maxPic", 0)
+        self._prefetchCount = min(self._prefetchCount, self._prefetchChapterMax)
+        self._prefetchReady = True
+        self._PumpCrossChapterPrefetch(key)
+
+    def _PumpCrossChapterPrefetch(self, key):
+        while (key == self._prefetchChapter
+               and self._prefetchActive < PICTURE_PREFETCH_CONCURRENCY
+               and self._prefetchNextIndex < self._prefetchCount):
+            index = self._prefetchNextIndex
+            self._prefetchNextIndex += 1
+            self._prefetchActive += 1
+            self._PrefetchNextPage(key, index)
+
+    def _PrefetchNextPage(self, key, index):
+        if key != self._prefetchChapter or index >= self._prefetchCount:
+            return
+        bookId, epsId = key
+        path = ToolUtil.GetRealPath(index + 1, "book/{}/{}".format(bookId, epsId + 1))
+        cachePath = os.path.join(Setting.GetCachePath(), path)
+        self.AddDownloadBook(bookId, epsId, index,
+                             completeCallBack=self._CompleteCrossChapterPrefetch,
+                             backParam=(key, index), cachePath=cachePath)
+
+    def _CompleteCrossChapterPrefetch(self, data, st, backParam):
+        key, _ = backParam
+        if key != self._prefetchChapter:
+            return
+        self._prefetchActive = max(0, self._prefetchActive - 1)
+        self._PumpCrossChapterPrefetch(key)
 
     def ChangeReadMode(self, index):
         self.qtTool.comboBox.setCurrentIndex(index)
