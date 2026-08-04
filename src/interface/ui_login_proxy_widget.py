@@ -37,9 +37,19 @@ class Ui_LoginProxyWidget(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 513, 535))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 513, 563))
         self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout_2 = QVBoxLayout()
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.checkBox = QCheckBox(self.scrollAreaWidgetContents)
+        self.checkBox.setObjectName(u"checkBox")
+
+        self.verticalLayout_2.addWidget(self.checkBox)
+
+
+        self.verticalLayout.addLayout(self.verticalLayout_2)
+
         self.horizontalLayout_11 = QHBoxLayout()
         self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
         self.proxy_0 = QRadioButton(self.scrollAreaWidgetContents)
@@ -133,7 +143,7 @@ class Ui_LoginProxyWidget(object):
 
         self.horizontalLayout_12.addWidget(self.proxyLabel)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.horizontalLayout_12.addItem(self.horizontalSpacer)
 
@@ -177,7 +187,7 @@ class Ui_LoginProxyWidget(object):
 
         self.horizontalLayout_4.addWidget(self.imgTimeout)
 
-        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.horizontalLayout_4.addItem(self.horizontalSpacer_4)
 
@@ -217,7 +227,7 @@ class Ui_LoginProxyWidget(object):
 
         self.horizontalLayout_3.addWidget(self.imgCombox)
 
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.horizontalLayout_3.addItem(self.horizontalSpacer_2)
 
@@ -449,6 +459,7 @@ class Ui_LoginProxyWidget(object):
 
     def retranslateUi(self, LoginProxyWidget):
         LoginProxyWidget.setWindowTitle(QCoreApplication.translate("LoginProxyWidget", u"\u4ee3\u7406\u8bbe\u7f6e", None))
+        self.checkBox.setText(QCoreApplication.translate("LoginProxyWidget", u"\u4f7f\u7528Pica22API", None))
         self.proxy_0.setText(QCoreApplication.translate("LoginProxyWidget", u"\u65e0\u4ee3\u7406", None))
         self.proxy_1.setText(QCoreApplication.translate("LoginProxyWidget", u"HTTP\u4ee3\u7406", None))
         self.label.setText(QCoreApplication.translate("LoginProxyWidget", u"\u4ee3\u7406\u5730\u5740", None))

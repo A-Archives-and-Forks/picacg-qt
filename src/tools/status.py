@@ -7,6 +7,9 @@ class Status(object):
     Error = Str.Error
     WaitLoad = Str.WaitLoad
     NetError = Str.NetError
+    DnsError = Str.DnsError
+    EchError = Str.EchError
+    SNIError = Str.SNIError
     UserError = Str.UserError
     RegisterError = Str.RegisterError
     UnKnowError = Str.UnKnowError
@@ -21,6 +24,7 @@ class Status(object):
     ProxyError = Str.ProxyError
     DownloadFail = Str.DownloadFail
     OfflineModel = Str.OfflineModel
+    DownloadBusy = Str.DownloadBusy
 
     UnderReviewBook = Str.UnderReviewBook
     SaveError = Str.SaveError

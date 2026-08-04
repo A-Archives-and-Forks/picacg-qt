@@ -16,7 +16,6 @@ from tools.status import Status
 from tools.str import Str
 from tools.tool import ToolUtil
 from tools.user import User
-from view.user.login_view import LoginView
 from tools.langconv import Converter
 
 class NavigationWidget(QWidget, Ui_Navigation, QtTaskBase):
@@ -103,14 +102,15 @@ class NavigationWidget(QWidget, Ui_Navigation, QtTaskBase):
         return
 
     def OpenLoginView(self):
-        isAutoLogin = Setting.AutoLogin.value
-        if User().isLogin:
-            self.Logout()
-            isAutoLogin = 0
-
-        loginView = LoginView(QtOwner().owner, isAutoLogin)
-        loginView.show()
-        loginView.closed.connect(self.LoginSucBack)
+        QtOwner().OpenLogin()
+        # isAutoLogin = Setting.AutoLogin.value
+        # if User().isLogin:
+        #     self.Logout()
+        #     isAutoLogin = 0
+        #
+        # loginView = LoginView(QtOwner().owner, isAutoLogin)
+        # loginView.show()
+        # loginView.closed.connect(self.LoginSucBack)
         return
 
     def Logout(self):
@@ -129,23 +129,24 @@ class NavigationWidget(QWidget, Ui_Navigation, QtTaskBase):
 
     def UpdateProxyName(self):
         if Setting.ProxySelectIndex.value == 4:
-            self.proxyName.setText("CDN_{}".format(Setting.PreferCDNIP.value))
+            name = QtOwner().loginNewView.proxyWidget.GetProxyName()
+            self.proxyName.setText(name)
         elif Setting.ProxySelectIndex.value == 5:
-            self.proxyName.setText("JP反代分流")
+            self.proxyName.setText(Str.GetStr(Str.JPProxyRoute))
         elif Setting.ProxySelectIndex.value == 6:
-            self.proxyName.setText("US反代分流")
-
+            self.proxyName.setText(Str.GetStr(Str.UsProxyRoute))
         else:
-            self.proxyName.setText("分流{}".format(str(Setting.ProxySelectIndex.value)))
+            self.proxyName.setText(Str.GetStr(Str.Route).format(Setting.ProxySelectIndex.value))
 
         if Setting.ProxyImgSelectIndex.value == 4:
-            self.proxyImgName.setText("CDN_{}".format(Setting.PreferCDNIPImg.value))
+            name = QtOwner().loginNewView.proxyWidget.GetProxyName()
+            self.proxyImgName.setText(name)
         elif Setting.ProxyImgSelectIndex.value == 5:
-            self.proxyImgName.setText("JP反代分流")
+            self.proxyImgName.setText(Str.GetStr(Str.JPProxyRoute))
         elif Setting.ProxyImgSelectIndex.value == 6:
-            self.proxyImgName.setText("US反代分流")
+            self.proxyImgName.setText(Str.GetStr(Str.UsProxyRoute))
         else:
-            self.proxyImgName.setText("分流{}".format(str(Setting.ProxyImgSelectIndex.value)))
+            self.proxyImgName.setText(Str.GetStr(Str.Route).format(Setting.ProxyImgSelectIndex.value))
 
     def HourTimeOut(self):
         Log.Info("check_next_sign")

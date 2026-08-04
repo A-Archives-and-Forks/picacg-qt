@@ -11,6 +11,5 @@ webdavclient3
 tqdm
 pysmb
 lxml
-httpx
-httpx[http2]
-httpx[socks]
+smbprotocol
+curl_cffi>=0.13.0,<=0.15.0

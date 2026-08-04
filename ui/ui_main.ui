@@ -70,7 +70,10 @@
              </layout>
             </item>
             <item>
-             <spacer name="horizontalSpacer">
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>40</width>
@@ -102,6 +105,7 @@
             <widget class="CommentView" name="commentView"/>
             <widget class="SubCommentView" name="subCommentView"/>
             <widget class="ChatView" name="chatView"/>
+            <widget class="LoginNewView" name="loginNewView"/>
             <widget class="FavoriteView" name="favorityView"/>
             <widget class="HistoryView" name="historyView"/>
             <widget class="BookInfoView" name="bookInfoView"/>
@@ -310,6 +314,12 @@
    <class>BatchSrToolView</class>
    <extends>QWidget</extends>
    <header location="global">view.tool.batch_sr_tool_view.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LoginNewView</class>
+   <extends>QWidget</extends>
+   <header location="global">view.user.login_new_view.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

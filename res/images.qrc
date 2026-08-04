@@ -87,6 +87,8 @@
     <file>icon/clear_off.png</file>
     <file>icon/upload.svg</file>
     <file>icon/shiled.svg</file>
+    <file>icon/error.svg</file>
+    <file>icon/right.svg</file>
   </qresource>
   <qresource prefix="icon">
     <file>theme/dark_pink/disabled/base.svg</file>

@@ -45,6 +45,11 @@ class Str:
     AccountAlready = 1029    # "账号已被注册"
     NotAdult = 1030          # "未成年禁止注册"
     SpaceEps = 1031          # "空白章节"
+    DownloadBusy = 1032      # "下载繁忙"
+    Fail = 1033              # 失败
+    DnsError = 1034              # dns错误
+    EchError = 1035              # ECH过期
+    SNIError = 1036              # 未识别SNI
 
     Success = 2001         # "下载完成"
     Reading = 2002         # "获取信息"
@@ -262,6 +267,37 @@ class Str:
     NotUpdateEps = 154      # 没有可更新的章节
     CurRead = 155           # 正在看
     CopyIdAndTitle = 156    # 复制ID和标题
+    Route = 157             # 分流{}
+    UsProxyRoute = 158      # US反代分流
+    CustomDomain = 159      # 自定义域名
+    AutoCheckInDone = 160   # 已自动打卡
+    TasksWaiting = 161      # {}个任务等待处理
+    ConfirmDownloadBooks = 162   # 是否下载{}本
+    ConfirmUploadBooksTo = 163   # 是否上传{}本到({})
+    ConfirmDeleteRecord = 164    # 是否删除记录
+    ConfirmDeleteRecordAndFile = 165  # 是否删除记录和文件
+    BuyWithJcoin = 166      # {}Jcoin购买
+    ClearCache = 167        # 清除缓存
+    ConfirmClearBookCache = 168  # 是否清除本书所有缓存\n{}\n{}
+    ConfirmDeleteNas = 169  # 是否删除网络存储， {}
+    DeleteNas = 170         # 删除网络存储
+    Recommended = 171       # 推荐使用
+    AddedBooksToShelf = 172 # 已添加{}本到书架, {}本存在已忽略
+    AuthorPrefix = 173      # 作者: {}
+    ToggleDoublePageAlign = 174  # 切换双页对齐
+    SwitchOn = 175          # 开
+    SwitchOff = 176         # 关
+    Upload = 177            # 上传
+    EpisodeTitleWithName = 178   # 第{}话_{}
+    EpisodeTitle = 179      # 第{}话
+    ExportedJmIds = 180     # 导出的JM号
+    Close = 181             # 关闭
+    Switch = 182            # 切换
+    ImportFavorite = 183                  # 导入收藏
+    ImportFavoriteNotice = 184            # 是否从账号收藏导入
+    RightLeftScroll2 = 185         # 右左滚动(滚轮正序)
+    UpdateTime = 186         # 更新时间
+    JPProxyRoute = 187      # JP反代分流
 
 
     @classmethod
@@ -299,6 +335,11 @@ class Str:
         cls.strDict[cls.AccountAlready] = QCoreApplication.translate("cls.obj", "账号已被注册", None)
         cls.strDict[cls.NotAdult] = QCoreApplication.translate("cls.obj", "未成年禁止注册", None)
         cls.strDict[cls.SpaceEps] = QCoreApplication.translate("cls.obj", "空白章节", None)
+        cls.strDict[cls.DownloadBusy] = QCoreApplication.translate("cls.obj", "下载繁忙", None)
+        cls.strDict[cls.Fail] = QCoreApplication.translate("cls.obj", "失败", None)
+        cls.strDict[cls.DnsError] = QCoreApplication.translate("cls.obj", "DNS错误", None)
+        cls.strDict[cls.EchError] = QCoreApplication.translate("cls.obj", "ECH过期", None)
+        cls.strDict[cls.SNIError] = QCoreApplication.translate("cls.obj", "未识别SNI", None)
 
         cls.strDict[cls.LoadingPicture] = QCoreApplication.translate("cls.obj",  "图片加载中...", None)
         cls.strDict[cls.LoadingFail] = QCoreApplication.translate("cls.obj",  "图片加载失败", None)
@@ -361,7 +402,8 @@ class Str:
         cls.strDict[cls.CvMkdirFail] = QCoreApplication.translate("cls.obj",  "创建目录失败", None)
         cls.strDict[cls.CvAddUpload] = QCoreApplication.translate("cls.obj",  "添加上传成功", None)
         cls.strDict[cls.DirNotFound] = QCoreApplication.translate("cls.obj",  "目录不存在", None)
-
+        cls.strDict[cls.SrNotFoundDir] = QCoreApplication.translate("cls.obj", "不存在输入目录", None)
+        cls.strDict[cls.SrNotExportDIr] = QCoreApplication.translate("cls.obj", "未设置导出目录", None)
 
         cls.strDict[cls.Menu] = QCoreApplication.translate("cls.obj",  "菜单", None)
         cls.strDict[cls.FullSwitch] = QCoreApplication.translate("cls.obj",  "全屏切换", None)
@@ -510,6 +552,37 @@ class Str:
         cls.strDict[cls.NotUpdateEps] = QCoreApplication.translate("cls.obj", "没有可更新章节", None)
         cls.strDict[cls.CurRead] = QCoreApplication.translate("cls.obj", "正在看", None)
         cls.strDict[cls.CopyIdAndTitle] = QCoreApplication.translate("cls.obj", "复制ID和标题", None)
+        cls.strDict[cls.Route] = QCoreApplication.translate("cls.obj", "分流{}", None)
+        cls.strDict[cls.UsProxyRoute] = QCoreApplication.translate("cls.obj", "US反代分流", None)
+        cls.strDict[cls.JPProxyRoute] = QCoreApplication.translate("cls.obj", "JP反代分流", None)
+        cls.strDict[cls.CustomDomain] = QCoreApplication.translate("cls.obj", "自定义域名", None)
+        cls.strDict[cls.AutoCheckInDone] = QCoreApplication.translate("cls.obj", "已自动打卡", None)
+        cls.strDict[cls.TasksWaiting] = QCoreApplication.translate("cls.obj", "{}个任务等待处理", None)
+        cls.strDict[cls.ConfirmDownloadBooks] = QCoreApplication.translate("cls.obj", "是否下载{}本", None)
+        cls.strDict[cls.ConfirmUploadBooksTo] = QCoreApplication.translate("cls.obj", "是否上传{}本到({})", None)
+        cls.strDict[cls.ConfirmDeleteRecord] = QCoreApplication.translate("cls.obj", "是否删除记录", None)
+        cls.strDict[cls.ConfirmDeleteRecordAndFile] = QCoreApplication.translate("cls.obj", "是否删除记录和文件", None)
+        cls.strDict[cls.BuyWithJcoin] = QCoreApplication.translate("cls.obj", "{}Jcoin购买", None)
+        cls.strDict[cls.ClearCache] = QCoreApplication.translate("cls.obj", "清除缓存", None)
+        cls.strDict[cls.ConfirmClearBookCache] = QCoreApplication.translate("cls.obj", "是否清除本书所有缓存\n{}\n{}", None)
+        cls.strDict[cls.ConfirmDeleteNas] = QCoreApplication.translate("cls.obj", "是否删除网络存储， {}", None)
+        cls.strDict[cls.DeleteNas] = QCoreApplication.translate("cls.obj", "删除网络存储", None)
+        cls.strDict[cls.Recommended] = QCoreApplication.translate("cls.obj", "推荐使用", None)
+        cls.strDict[cls.AddedBooksToShelf] = QCoreApplication.translate("cls.obj", "已添加{}本到书架, {}本存在已忽略", None)
+        cls.strDict[cls.AuthorPrefix] = QCoreApplication.translate("cls.obj", "作者: {}", None)
+        cls.strDict[cls.ToggleDoublePageAlign] = QCoreApplication.translate("cls.obj", "切换双页对齐", None)
+        cls.strDict[cls.SwitchOn] = QCoreApplication.translate("cls.obj", "开", None)
+        cls.strDict[cls.SwitchOff] = QCoreApplication.translate("cls.obj", "关", None)
+        cls.strDict[cls.Upload] = QCoreApplication.translate("cls.obj", "上传", None)
+        cls.strDict[cls.EpisodeTitleWithName] = QCoreApplication.translate("cls.obj", "第{}话_{}", None)
+        cls.strDict[cls.EpisodeTitle] = QCoreApplication.translate("cls.obj", "第{}话", None)
+        cls.strDict[cls.ExportedJmIds] = QCoreApplication.translate("cls.obj", "导出的JM号", None)
+        cls.strDict[cls.Close] = QCoreApplication.translate("cls.obj", "关闭", None)
+        cls.strDict[cls.Switch] = QCoreApplication.translate("cls.obj", "切换", None)
+        cls.strDict[cls.ImportFavorite] = QCoreApplication.translate("cls.obj", "导入收藏", None)
+        cls.strDict[cls.ImportFavoriteNotice] = QCoreApplication.translate("cls.obj", "是否从账号收藏导入", None)
+        cls.strDict[cls.RightLeftScroll2] = QCoreApplication.translate("cls.obj", "右左滚动(滚轮正序)", None)
+        cls.strDict[cls.UpdateTime] = QCoreApplication.translate("cls.obj", "更新时间", None)
 
     @classmethod
     def GetStr(cls, enumType, defualt=""):

@@ -198,9 +198,11 @@ class MainView(Main, QtTaskBase):
     def Init(self):
         print(self.size())
         IsCanUse = False
+        self.SwitchWidgetAndClear(self.subStackWidget.indexOf(self.helpView))
         self.downloadView.Init()
         self.nasView.Init()
         self.InitApiProxy()
+        Server().Init()
         if config.CanWaifu2x:
             from sr_vulkan import sr_vulkan as sr
             stat = sr.init()
@@ -243,7 +245,7 @@ class MainView(Main, QtTaskBase):
             self.readView.frame.qtTool.checkBox.setEnabled(False)
             Setting.DownloadAuto.SetValue(0)
             Setting.CoverIsOpenWaifu.SetValue(0)
-            self.downloadView.radioButton.setEnabled(False)
+            # self.downloadView.radioButton.setEnabled(False)
             self.waifu2xToolView.checkBox.setEnabled(False)
             self.waifu2xToolView.changeButton.setEnabled(False)
             self.waifu2xToolView.changeButton.setEnabled(False)
@@ -314,7 +316,7 @@ class MainView(Main, QtTaskBase):
     def LoginSucBack(self):
         self.helpView.Init()
         self.favorityView.InitFavorite()
-        self.SwitchWidget(self.indexView)
+        # self.SwitchWidget(self.indexView)
 
     def SwitchWidgetNext(self):
         index = self.subStackWidget.currentIndex()

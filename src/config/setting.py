@@ -111,17 +111,28 @@ class Setting:
     Sock5Proxy = SettingValue("ProxySetting", "", False)
     ChatProxy = SettingValue("ProxySetting", 0, False)
     PreferCDNIP = SettingValue("ProxySetting", "104.18.227.172", False)
+    PreferCDNList = SettingValue("ProxySetting", "104.18.227.172,104.16.16.230,104.16.108.62,104.24.169.89,104.19.229.139,104.21.73.214", False)
     IsUseHttps = SettingValue("ProxySetting", 1, False)
     PreIpv6 = SettingValue("ProxySetting", 0, False)
     LastProxyResult = SettingValue("ProxySetting", {}, False)
-    IsUseSniPretend = SettingValue("ProxySetting", 1, False)
+    # IsUseSniPretend = SettingValue("ProxySetting", 1, False)
+    ProxyIpValue =  SettingValue("ProxySetting", "", False)
 
     ProxySelectIndex = SettingValue("ProxySetting", 1, False)
     ProxyImgSelectIndex = SettingValue("ProxySetting", 1, False)
     PreferCDNIPImg = SettingValue("ProxySetting", "104.18.227.172", False)
     ApiTimeOut = SettingValue("ProxySetting", 1, False, [2, 5, 7, 10])
     ImgTimeOut = SettingValue("ProxySetting", 1, False, [2, 5, 7, 10, 15])
+    IsUseApi26 = SettingValue("ProxySetting", 0, False)
+    LastIpResult = SettingValue("ProxySetting", {}, False)
 
+    IsOpenDoh = SettingValue("ProxySetting", 0, False)
+    DohAddress = SettingValue("ProxySetting", "https://parse.jpacg.cc/parse", False)
+    EnableEch = SettingValue("ProxySetting", 1, False)
+    # EchValue = SettingValue("ProxySetting", "", False)
+    # IsOpenHTTP3 = SettingValue("ProxySetting", 0, False)
+
+    NewProxySelectIndex = SettingValue("ProxySetting", 1, False)
     # 下载与缓存
     SavePath = SettingValue("DownloadSetting", "", False)
     SaveNameType = SettingValue("DownloadSetting", 0, False)
@@ -238,10 +249,15 @@ class Setting:
         for path in [
             Setting.GetConfigPath(),
             Setting.GetDataPath(),
-            Setting.GetCachePath(), 
             Setting.GetStatePath(),
         ]:
             os.makedirs(path, exist_ok=True)
+
+        if Setting.SavePath.value:
+            for path in [
+                Setting.GetCachePath(),
+            ]:
+                os.makedirs(path, exist_ok=True)
         return
 
     @staticmethod

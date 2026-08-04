@@ -32,69 +32,12 @@ jobs:
         cd script
         pip install delocate wheel_filename==1.4.2
         python build_universal2.py pillow
+        python build_universal2.py cffi 1.17.1
+        python build_universal2.py curl_cffi 0.13.0
+        python build_universal2.py pyyaml 6.0.2
         pip install *.whl
         cd ..
 
-        pip install -r src/requirements_macos.txt
-        brew install create-dmg
-    - name: Build
-      run: |
-        cd src
-        cd db
-        unzip -o book.zip
-        cd ..
-        cp ../res/icon/Icon.icns ./
-        pyinstaller --target-architecture=universal2 --clean --onedir --name PicACG \
-            --hidden-import sr_ncnn_vulkan --hidden-import PySide6 --hidden-import requests \
-            --hidden-import urllib3 --hidden-import websocket-client --hidden-import pillow \
-            --hidden-import config \
-            --hidden-import component \
-            --hidden-import server \
-            --hidden-import task \
-            --hidden-import tools \
-            --hidden-import view \
-            --strip --windowed -i Icon.icns \
-            start.py
-        cp -avf db dist/PicACG.app/Contents/Frameworks
-        xattr -cr dist/PicACG.app
-        xattr -dr com.apple.quarantine dist/PicACG.app
-        create-dmg --volname "PicACG" --volicon "Icon.icns" --icon "PicACG.app" 200 190 \
-            --window-pos 200 120 \
-            --window-size 800 400 \
-            --icon-size 100 \
-            --hide-extension "PicACG.app" --app-drop-link 600 185 \
-            ${{ env.PACKAGENAME }}.dmg dist/PicACG.app
-
-        zip -9 bika.zip ${{ env.PACKAGENAME }}.dmg
-        mv ${{ env.PACKAGENAME }}.dmg ..
-        mv bika.zip ..
-        cd ..
-    - name: Upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: bika.zip
-        retention-days: 7
-
-  macos-nosr:
-    runs-on: macos-latest
-    env:
-      PACKAGENAME: bika_nosr_macos_universal2
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.10'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pyinstaller
-        cd script
-        pip install delocate wheel_filename==1.4.2
-        python build_universal2.py pillow
-        pip install *.whl
-        cd ..
         pip install -r src/requirements_macos.txt
         brew install create-dmg
     - name: Build
@@ -139,13 +82,13 @@ jobs:
   windows:
     runs-on: windows-latest
     env:
-      PACKAGENAME: bika_py39_windows_x64
+      PACKAGENAME: bika_py310_windows_x64
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.9
+    - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
-        python-version: 3.9
+        python-version: '3.10'
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -165,140 +108,7 @@ jobs:
 
         cp ..\res\icon\icon.ico .\
 
-        pyinstaller -F -w -i icon.ico start.py --upx-dir "D:\upx-5.0.1-win64"
-        mv dist bika
-        Copy-Item -Verbose -Recurse -Path db -Destination bika/
-        cp ..\LICENSE bika\
-        cp ..\CHANGELOG bika\
-        cd ..
-        mkdir ${{ env.PACKAGENAME }}
-        mv src\bika ${{ env.PACKAGENAME }}
-        7z a -r "$($Env:PACKAGENAME + '.zip')" "bika"
-    - name: Upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}
-        retention-days: 7
-        
-  windows-nosr:
-    runs-on: windows-latest
-    env:
-      PACKAGENAME: bika_py39_nosr_windows_x64
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pyinstaller
-        pip install -r src\requirements_nosr.txt
-        
-        Invoke-WebRequest -Uri "https://github.com/upx/upx/releases/download/v5.0.1/upx-5.0.1-win64.zip" -OutFile "upx.zip"
-        Expand-Archive -Path "upx.zip" -DestinationPath "D:\"
-        Remove-Item "upx.zip"
-
-    - name: Build
-      run: |
-        cd src
-        cd db
-        7z x book.zip
-        cd ..
-
-        cp ..\res\icon\icon.ico .\
-
-        pyinstaller -F -w -i icon.ico start.py --upx-dir "D:\upx-5.0.1-win64"
-        mv dist bika
-        Copy-Item -Verbose -Recurse -Path db -Destination bika/
-        cp ..\LICENSE bika\
-        cp ..\CHANGELOG bika\
-        cd ..
-        mkdir ${{ env.PACKAGENAME }}
-        mv src\bika ${{ env.PACKAGENAME }}
-        7z a -r "$($Env:PACKAGENAME + '.zip')" "bika"
-    - name: Upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}
-        retention-days: 7
-
-  windows7:
-    runs-on: windows-latest
-    env:
-      PACKAGENAME: bika_py38_windows7_x64
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.8
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pyinstaller==4.6
-        pip install sr-vulkan
-        pip install sr-vulkan-model-waifu2x
-        pip install sr-vulkan-model-realcugan
-        pip install sr-vulkan-model-realesrgan
-        pip install -r src\requirements_win7.txt
-        
-        Invoke-WebRequest -Uri "https://github.com/upx/upx/releases/download/v5.0.1/upx-5.0.1-win64.zip" -OutFile "upx.zip"
-        Expand-Archive -Path "upx.zip" -DestinationPath "D:\"
-        Remove-Item "upx.zip"
-
-    - name: Build
-      run: |
-        cd src
-        cd db
-        7z x book.zip
-        cd ..
-        cp ..\res\icon\icon.ico .\
-        pyinstaller -F -w -i icon.ico start.py --upx-dir "D:\upx-5.0.1-win64"
-        mv dist bika
-        Copy-Item -Verbose -Recurse -Path db -Destination bika/
-        cp ..\LICENSE bika\
-        cp ..\CHANGELOG bika\
-        cd ..
-        mkdir ${{ env.PACKAGENAME }}
-        mv src\bika ${{ env.PACKAGENAME }}
-        7z a -r "$($Env:PACKAGENAME + '.zip')" "bika"
-    - name: Upload
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ env.PACKAGENAME }}
-        path: ${{ env.PACKAGENAME }}
-        retention-days: 7
-
-  windows7-nosr:
-    runs-on: windows-latest
-    env:
-      PACKAGENAME: bika_py38_nosr_windows7_x64
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.8
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pyinstaller==4.6
-        pip install -r src\requirements_win7.txt
-        Invoke-WebRequest -Uri "https://github.com/upx/upx/releases/download/v5.0.1/upx-5.0.1-win64.zip" -OutFile "upx.zip"
-        Expand-Archive -Path "upx.zip" -DestinationPath "D:\"
-        Remove-Item "upx.zip"
-    - name: Build
-      run: |
-        cd src
-        cd db
-        7z x book.zip
-        cd ..
-        cp ..\res\icon\icon.ico .\
-        pyinstaller -F -w -i icon.ico start.py  --upx-dir "D:\upx-5.0.1-win64"
+        pyinstaller --hidden-import=_cffi_backend --collect-all curl_cffi -F -w -i icon.ico start.py --upx-dir "D:\upx-5.0.1-win64"
         mv dist bika
         Copy-Item -Verbose -Recurse -Path db -Destination bika/
         cp ..\LICENSE bika\
@@ -317,13 +127,13 @@ jobs:
   ubuntu:
     runs-on: ubuntu-latest
     env:
-      PACKAGENAME: bika_py39_linux
+      PACKAGENAME: bika_py310_linux
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.9
+    - name: Set up Python 3.10
       uses: actions/setup-python@v5
       with:
-        python-version: 3.9
+        python-version: '3.10'
     - name: Install dependencies
       run: |
         sudo apt-get install -y fuse libfuse2
@@ -333,7 +143,7 @@ jobs:
     - name: Build
       run: |
         cd src
-        pyinstaller -w start.py
+        pyinstaller --hidden-import=_cffi_backend --collect-all curl_cffi -w start.py
         cd db
         unzip -o book.zip
         cd ..

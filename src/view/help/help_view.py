@@ -17,7 +17,7 @@ from qt_owner import QtOwner
 from server import req
 from server.sql_server import SqlServer, DbBook
 from task.qt_task import QtTaskBase
-from task.task_thread import ThreadPrintDns
+# from task.task_thread import ThreadPrintDns
 from tools.log import Log
 from tools.str import Str
 from tools.tool import ToolUtil
@@ -61,7 +61,7 @@ class HelpView(QWidget, Ui_Help, QtTaskBase):
         self.preCheckBox.setChecked(bool(Setting.IsPreUpdate.value))
         self.preCheckBox.clicked.connect(self.SwitchCheckPre)
         self.configVer.setText("{}({})".format(GlobalConfig.Ver.value, GlobalConfig.VerTime.value))
-        self.dnsCheck = ThreadPrintDns()
+        # self.dnsCheck = ThreadPrintDns()
         self.configUrlList = [config.AppUrl, config.AppUrl2, config.AppUrl3]
         self.configUrlIndex = 0
         self.updateUrlIndex = 0
@@ -134,11 +134,11 @@ class HelpView(QWidget, Ui_Help, QtTaskBase):
             if st != Str.Ok:
                 self.configUrlIndex += 1
                 if self.configUrlIndex >= len(self.configUrlList):
-                    self.StartCheckDns()
+                    # self.StartCheckDns()
                     return
                 self.AddHttpTask(req.CheckUpdateConfigReq(self.configUrlList[self.configUrlIndex]), self.InitUpdateConfigBack)
                 return
-            self.StartCheckDns()
+            # self.StartCheckDns()
             data = raw.get("data")
             if not data:
                 return
@@ -147,16 +147,16 @@ class HelpView(QWidget, Ui_Help, QtTaskBase):
         except Exception as es:
             Log.Error(es)
 
-    def StartCheckDns(self):
-        self.dnsCheck.hostList.append(config.AppUrl)
-        self.dnsCheck.hostList.append(config.AppUrl2)
-        self.dnsCheck.hostList.append(config.AppUrl3)
-        self.dnsCheck.hostList.append(config.Url)
-        self.dnsCheck.hostList.append(GlobalConfig.ProxyApiDomain.value)
-        self.dnsCheck.hostList.append(GlobalConfig.ProxyApiDomain2.value)
-        self.dnsCheck.hostList.extend(GlobalConfig.ImageServerList.value)
-        self.dnsCheck.hostList.extend(GlobalConfig.ImageJumList.value)
-        self.dnsCheck.start()
+    # def StartCheckDns(self):
+    #     self.dnsCheck.hostList.append(config.AppUrl)
+    #     self.dnsCheck.hostList.append(config.AppUrl2)
+    #     self.dnsCheck.hostList.append(config.AppUrl3)
+    #     self.dnsCheck.hostList.append(config.Url)
+    #     self.dnsCheck.hostList.append(GlobalConfig.ProxyApiDomain.value)
+    #     self.dnsCheck.hostList.append(GlobalConfig.ProxyApiDomain2.value)
+    #     self.dnsCheck.hostList.extend(GlobalConfig.ImageServerList.value)
+    #     self.dnsCheck.hostList.extend(GlobalConfig.ImageJumList.value)
+    #     self.dnsCheck.start()
 
     def CheckDb(self):
         self.AddSqlTask("book", "", SqlServer.TaskCheck, self.CheckDbBack)

@@ -7,7 +7,7 @@ from functools import partial
 from PySide6 import QtWidgets
 from PySide6.QtCore import QSettings, Qt, QSize, QUrl, QFile, QTranslator, QLocale, QEvent
 from PySide6.QtGui import QDesktopServices, QFont, QFontDatabase
-from PySide6.QtWidgets import QFileDialog, QScroller, QScrollerProperties, QToolTip
+from PySide6.QtWidgets import QFileDialog, QScroller, QScrollerProperties
 
 from config import config
 from config.setting import Setting, SettingValue
@@ -16,7 +16,6 @@ from qt_owner import QtOwner
 from tools.langconv import Converter
 from tools.log import Log
 from tools.str import Str
-from view.user.login_view import LoginView
 
 
 class SettingView(QtWidgets.QWidget, Ui_SettingNew):
@@ -184,9 +183,9 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
                 Log.UpdateLoggingLevel()
             elif setItem == Setting.Language:
                 self.SetLanguage()
-            elif setItem == Setting.IsHttpProxy:
-                from server.server import Server
-                Server().UpdateProxy()
+            # elif setItem == Setting.IsHttpProxy:
+            #     from server.server import Server
+            #     Server().UpdateProxy()
             QtOwner().ShowMsgOne(Str.GetStr(Str.SaveSuc))
         self.CheckMsgLabel()
         return
@@ -226,9 +225,9 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         assert isinstance(setItem, SettingValue)
         setItem.SetValue(value)
         QtOwner().ShowMsgOne(Str.GetStr(Str.SaveSuc))
-        if setItem == Setting.IsHttpProxy:
-            from server.server import Server
-            Server().UpdateProxy()
+        # if setItem == Setting.IsHttpProxy:
+        #     from server.server import Server
+        #     Server().UpdateProxy()
         self.CheckMsgLabel()
         return
 
@@ -238,8 +237,8 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         setItem.SetValue(value)
         QtOwner().ShowMsgOne(Str.GetStr(Str.SaveSuc))
         self.CheckMsgLabel()
-        from server.server import Server
-        Server().UpdateProxy()
+        # from server.server import Server
+        # Server().UpdateProxy()
         return
 
     def SpinBoxEvent(self, setItem, value):
@@ -257,8 +256,8 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         self.InitSetting()
         self.SetTheme()
         self.SetLanguage()
-        from server.server import Server
-        Server().UpdateProxy()
+        # from server.server import Server
+        # Server().UpdateProxy()
         # self.SetSock5Proxy()
         return
 

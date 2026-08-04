@@ -68,9 +68,9 @@ class IndexView(QWidget, Ui_Index, QtTaskBase):
     def InitRandomBack(self, raw):
         try:
             QtOwner().CloseLoading()
-            data = json.loads(raw["data"])
             st = raw["st"]
             if st == Status.Ok:
+                data = json.loads(raw["data"])
                 self.randomList.clear()
                 for v in data.get("data").get('comics'):
                     bookList = self.randomList

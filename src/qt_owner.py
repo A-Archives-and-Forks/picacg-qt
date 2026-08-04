@@ -17,9 +17,11 @@ class QtOwner(Singleton):
         self._localServer = None
         self.backSock = None
         self.isUseDb = True
+        self.isDbHavePicaID = False
         self.isOfflineModel = False
         self.closeType = 1   # 1普通， 2关闭弹窗触发， 3任务栏触发
         self.isMaxSize = 0
+        self.echConfig = ""
 
     # db不可使用
     def SetDbError(self):
@@ -86,16 +88,18 @@ class QtOwner(Singleton):
         QtOwner().ShowMsg(Str.GetStr(Str.CopySuc))
 
     def OpenProxy(self):
-        from view.user.login_view import LoginView
-        loginView = LoginView(QtOwner().owner, False)
-        loginView.tabWidget.setCurrentIndex(3)
-        loginView.tabWidget.removeTab(0)
-        loginView.tabWidget.removeTab(0)
-        loginView.tabWidget.removeTab(0)
-        loginView.loginButton.setText(Str.GetStr(Str.Save))
-        loginView.show()
-
-        loginView.closed.connect(QtOwner().owner.navigationWidget.UpdateProxyName)
+        arg = {"refresh": True, "page": 3}
+        self.owner.SwitchWidget(self.owner.loginNewView, **arg)
+        # from view.user.login_view import LoginView
+        # loginView = LoginView(QtOwner().owner, False)
+        # loginView.tabWidget.setCurrentIndex(3)
+        # loginView.tabWidget.removeTab(0)
+        # loginView.tabWidget.removeTab(0)
+        # loginView.tabWidget.removeTab(0)
+        # loginView.loginButton.setText(Str.GetStr(Str.Save))
+        # loginView.show()
+        #
+        # loginView.closed.connect(QtOwner().owner.navigationWidget.UpdateProxyName)
         return
 
     @property
@@ -107,6 +111,10 @@ class QtOwner(Singleton):
     @property
     def app(self):
         return self._app()
+
+    @property
+    def loginNewView(self):
+        return self.owner.loginNewView
 
     @property
     def localServer(self):
@@ -160,6 +168,10 @@ class QtOwner(Singleton):
     def searchView(self):
         return self.owner.searchView
 
+    def UpdateProxyName(self):
+        self.owner.navigationWidget.UpdateProxyName()
+        return
+
     def SetSubTitle(self, text):
         return self.owner.setSubTitle(text)
 
@@ -176,7 +188,16 @@ class QtOwner(Singleton):
         loginView.show()
         loginView.Close.connect(callBack)
         return
-    
+
+    def OpenFavoriteFold(self, bookId="", fid="", moveBack=None, foldChangeBack=None):
+        from view.user.local_favorite_fold_view import LocalFavoriteFoldView
+        w = LocalFavoriteFoldView(QtOwner().owner, bookId)
+        w.show()
+        if moveBack:
+            w.MoveOkBack.connect(moveBack)
+        if foldChangeBack:
+            w.FoldChange.connect(foldChangeBack)
+
     def AddLocalHistory(self, bookId):
         self.owner.localReadView.AddDataToDB(bookId)
 
@@ -193,8 +214,13 @@ class QtOwner(Singleton):
         self.owner.SwitchWidget(self.owner.rankView, **arg)
 
     def OpenIndex(self):
-        arg = {"refresh": True}
-        self.owner.SwitchWidget(self.owner.indexView, **arg)
+        self.owner.navigationWidget.indexButton.click()
+        # arg = {"refresh": True}
+        # self.owner.SwitchWidget(self.owner.indexView, **arg)
+
+    def OpenLogin(self):
+        arg = {"refresh": True, "page": 0}
+        self.owner.SwitchWidget(self.owner.loginNewView, **arg)
 
     def OpenDownloadAll(self, books):
         arg = {"books": books}
@@ -371,8 +397,11 @@ class QtOwner(Singleton):
             if Setting.FontName.value:
                 f = QFont(Setting.FontName.value)
 
-            if Setting.FontSize.value and Setting.FontSize.value != "Defalut":
-                f.setPointSize(int(Setting.FontSize.value))
+            if Setting.FontSize.value and Setting.FontSize.value != "Default":
+                if isinstance(Setting.FontSize.value, int):
+                    f.setPointSize(int(Setting.FontSize.value))
+                elif isinstance(Setting.FontSize.value, str) and Setting.FontSize.value.isdigit():
+                    f.setPointSize(int(Setting.FontSize.value))
 
             if Setting.FontStyle.value:
                 fontStyleList = [QFont.Light, QFont.Normal, QFont.DemiBold, QFont.Bold, QFont.Black]

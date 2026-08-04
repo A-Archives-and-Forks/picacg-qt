@@ -50,6 +50,7 @@ from view.tool.local_read_view import LocalReadView
 from view.tool.waifu2x_tool_view import Waifu2xToolView
 from view.user.favorite_view import FavoriteView
 from view.user.history_view import HistoryView
+from view.user.login_new_view import LoginNewView
 
 class Ui_Main(object):
     def setupUi(self, Main):
@@ -93,9 +94,9 @@ class Ui_Main(object):
 
         self.horizontalLayout_3.addLayout(self.menuLayout)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.horizontalLayout_3.addItem(self.horizontalSpacer)
+        self.horizontalLayout_3.addItem(self.horizontalSpacer_3)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_3)
@@ -159,6 +160,9 @@ class Ui_Main(object):
         self.chatView = ChatView()
         self.chatView.setObjectName(u"chatView")
         self.subStackWidget.addWidget(self.chatView)
+        self.loginNewView = LoginNewView()
+        self.loginNewView.setObjectName(u"loginNewView")
+        self.subStackWidget.addWidget(self.loginNewView)
         self.favorityView = FavoriteView()
         self.favorityView.setObjectName(u"favorityView")
         self.subStackWidget.addWidget(self.favorityView)

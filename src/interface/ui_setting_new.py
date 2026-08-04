@@ -590,37 +590,54 @@ class Ui_SettingNew(object):
         self.prefetchCountSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.prefetchCountLayout.addItem(self.prefetchCountSpacer)
+
+
         self.prefetchLayout.addLayout(self.prefetchCountLayout)
 
         self.crossChapterPrefetchLayout = QHBoxLayout()
         self.crossChapterPrefetchLayout.setObjectName(u"crossChapterPrefetchLayout")
         self.crossChapterPrefetch = QCheckBox(self.prefetchFrame)
         self.crossChapterPrefetch.setObjectName(u"crossChapterPrefetch")
+
         self.crossChapterPrefetchLayout.addWidget(self.crossChapterPrefetch)
+
         self.crossChapterPrefetchHelp = QLabel(self.prefetchFrame)
         self.crossChapterPrefetchHelp.setObjectName(u"crossChapterPrefetchHelp")
         self.crossChapterPrefetchHelp.setMaximumSize(QSize(24, 24))
         self.crossChapterPrefetchHelp.setStyleSheet(u"color: rgb(110, 110, 110); font-size: 16px;")
         self.crossChapterPrefetchHelp.setAlignment(Qt.AlignCenter)
+
         self.crossChapterPrefetchLayout.addWidget(self.crossChapterPrefetchHelp)
+
         self.crossChapterPrefetchSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
         self.crossChapterPrefetchLayout.addItem(self.crossChapterPrefetchSpacer)
+
+
         self.prefetchLayout.addLayout(self.crossChapterPrefetchLayout)
 
         self.prefetchWholeChapterLayout = QHBoxLayout()
         self.prefetchWholeChapterLayout.setObjectName(u"prefetchWholeChapterLayout")
         self.prefetchWholeChapter = QCheckBox(self.prefetchFrame)
         self.prefetchWholeChapter.setObjectName(u"prefetchWholeChapter")
+
         self.prefetchWholeChapterLayout.addWidget(self.prefetchWholeChapter)
+
         self.prefetchWholeChapterHelp = QLabel(self.prefetchFrame)
         self.prefetchWholeChapterHelp.setObjectName(u"prefetchWholeChapterHelp")
         self.prefetchWholeChapterHelp.setMaximumSize(QSize(24, 24))
         self.prefetchWholeChapterHelp.setStyleSheet(u"color: rgb(110, 110, 110); font-size: 16px;")
         self.prefetchWholeChapterHelp.setAlignment(Qt.AlignCenter)
+
         self.prefetchWholeChapterLayout.addWidget(self.prefetchWholeChapterHelp)
+
         self.prefetchWholeChapterSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
         self.prefetchWholeChapterLayout.addItem(self.prefetchWholeChapterSpacer)
+
+
         self.prefetchLayout.addLayout(self.prefetchWholeChapterLayout)
+
 
         self.verticalLayout_4.addWidget(self.prefetchFrame)
 
@@ -628,9 +645,11 @@ class Ui_SettingNew(object):
         self.prefetchLine.setObjectName(u"prefetchLine")
         self.prefetchLine.setFrameShape(QFrame.HLine)
         self.prefetchLine.setFrameShadow(QFrame.Sunken)
+
         self.verticalLayout_4.addWidget(self.prefetchLine)
 
         self.prefetchSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Minimum)
+
         self.verticalLayout_4.addItem(self.prefetchSpacer)
 
         self.proxyLabel = QLabel(self.scrollAreaWidgetContents)
@@ -1448,13 +1467,19 @@ class Ui_SettingNew(object):
         self.logutton2.setText(QCoreApplication.translate("SettingNew", u"Debug\uff08\u8be5\u8bbe\u7f6e\u5185\u542b\u654f\u611f\u6570\u636e\uff0clog\u6587\u4ef6\u8bf7\u52ff\u5206\u4eab\uff09", None))
         self.prefetchLabel.setText(QCoreApplication.translate("SettingNew", u"\u56fe\u7247\u9884\u53d6", None))
         self.prefetchCountLabel.setText(QCoreApplication.translate("SettingNew", u"\u9884\u53d6\u56fe\u7247\u6570\u91cf\uff1a", None))
-        self.prefetchCountHelp.setToolTip(QCoreApplication.translate("SettingNew", u"\u8bbe\u7f6e\u5f53\u524d\u9875\u4e4b\u540e\u9884\u53d6\u7684\u56fe\u7247\u6570\u91cf\uff0c\u4e0d\u5305\u542b\u5f53\u524d\u9875\u3002\u4e0b\u8f7d\u5e76\u53d1\u6570\u56fa\u5b9a\u4e3a5\u3002", None))
+#if QT_CONFIG(tooltip)
+        self.prefetchCountHelp.setToolTip(QCoreApplication.translate("SettingNew", u"\u8bbe\u7f6e\u5f53\u524d\u9875\u4e4b\u540e\u9884\u53d6\u7684\u56fe\u7247\u6570\u91cf\uff0c\u4e0b\u8f7d\u5e76\u53d1\u6570\u56fa\u5b9a\u4e3a5", None))
+#endif // QT_CONFIG(tooltip)
         self.prefetchCountHelp.setText(QCoreApplication.translate("SettingNew", u"\u24d8", None))
         self.crossChapterPrefetch.setText(QCoreApplication.translate("SettingNew", u"\u5141\u8bb8\u8de8\u7ae0\u8282\u9884\u53d6", None))
-        self.crossChapterPrefetchHelp.setToolTip(QCoreApplication.translate("SettingNew", u"\u63a5\u8fd1\u7ae0\u8282\u672b\u5c3e\u65f6\uff0c\u5c06\u5f53\u524d\u9884\u53d6\u6570\u91cf\u4e2d\u672a\u7528\u5b8c\u7684\u989d\u5ea6\u7528\u4e8e\u9884\u53d6\u4e0b\u4e00\u7ae0\u8282\uff0c\u5e76\u5199\u5165\u56fe\u7247\u7f13\u5b58\u3002", None))
+#if QT_CONFIG(tooltip)
+        self.crossChapterPrefetchHelp.setToolTip(QCoreApplication.translate("SettingNew", u"\u9884\u53d6\u9875\u6570\u5927\u4e8e\u5269\u4f59\u9875\u6570\u65f6\uff0c\u63d0\u524d\u9884\u53d6\u4e0b\u4e00\u7ae0\u8282", None))
+#endif // QT_CONFIG(tooltip)
         self.crossChapterPrefetchHelp.setText(QCoreApplication.translate("SettingNew", u"\u24d8", None))
         self.prefetchWholeChapter.setText(QCoreApplication.translate("SettingNew", u"\u9884\u53d6\u5f53\u524d\u7ae0\u8282\u5269\u4f59\u5168\u90e8\u56fe\u7247", None))
-        self.prefetchWholeChapterHelp.setToolTip(QCoreApplication.translate("SettingNew", u"\u5ffd\u7565\u9884\u53d6\u6570\u91cf\u9650\u5236\uff0c\u9884\u53d6\u5f53\u524d\u9875\u4e4b\u540e\u76f4\u5230\u672c\u7ae0\u672b\u5c3e\u7684\u5168\u90e8\u56fe\u7247\uff1b\u4ecd\u4fdd\u6301\u6700\u591a5\u4e2a\u5e76\u53d1\u4e0b\u8f7d\u3002", None))
+#if QT_CONFIG(tooltip)
+        self.prefetchWholeChapterHelp.setToolTip(QCoreApplication.translate("SettingNew", u"\u5ffd\u7565\u9884\u53d6\u6570\u91cf\u9650\u5236\uff0c\u9884\u53d6\u5f53\u524d\u9875\u4e4b\u540e\u76f4\u5230\u672c\u7ae0\u672b\u5c3e\u7684\u5168\u90e8\u56fe\u7247", None))
+#endif // QT_CONFIG(tooltip)
         self.prefetchWholeChapterHelp.setText(QCoreApplication.translate("SettingNew", u"\u24d8", None))
         self.proxyLabel.setText(QCoreApplication.translate("SettingNew", u"\u4ee3\u7406", None))
         self.label_7.setText(QCoreApplication.translate("SettingNew", u"Http\u4ee3\u7406\uff1a", None))
