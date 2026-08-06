@@ -31,7 +31,7 @@ class Ui_LoginNew(object):
     def setupUi(self, LoginNew):
         if not LoginNew.objectName():
             LoginNew.setObjectName(u"LoginNew")
-        LoginNew.resize(722, 690)
+        LoginNew.resize(812, 690)
         self.horizontalLayout_3 = QHBoxLayout(LoginNew)
         self.horizontalLayout_3.setSpacing(0)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
@@ -468,7 +468,7 @@ class Ui_LoginNew(object):
         self.scrollArea_3.setWidgetResizable(True)
         self.scrollAreaWidgetContents_3 = QWidget()
         self.scrollAreaWidgetContents_3.setObjectName(u"scrollAreaWidgetContents_3")
-        self.scrollAreaWidgetContents_3.setGeometry(QRect(0, 0, 479, 3233))
+        self.scrollAreaWidgetContents_3.setGeometry(QRect(0, -187, 569, 3253))
         self.verticalLayout_10 = QVBoxLayout(self.scrollAreaWidgetContents_3)
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
         self.horizontalLayout_15 = QHBoxLayout()
@@ -903,6 +903,27 @@ class Ui_LoginNew(object):
 
         self.horizontalLayout_29 = QHBoxLayout()
         self.horizontalLayout_29.setObjectName(u"horizontalLayout_29")
+        self.label_2 = QLabel(self.scrollAreaWidgetContents_3)
+        self.label_2.setObjectName(u"label_2")
+
+        self.horizontalLayout_29.addWidget(self.label_2)
+
+        self.proxyIpEdit = TipLineEdit(self.scrollAreaWidgetContents_3)
+        self.proxyIpEdit.setObjectName(u"proxyIpEdit")
+        self.proxyIpEdit.setMaximumSize(QSize(80, 16777215))
+
+        self.horizontalLayout_29.addWidget(self.proxyIpEdit)
+
+        self.proxyIpLabel = QLabel(self.scrollAreaWidgetContents_3)
+        self.proxyIpLabel.setObjectName(u"proxyIpLabel")
+        self.proxyIpLabel.setMinimumSize(QSize(80, 0))
+
+        self.horizontalLayout_29.addWidget(self.proxyIpLabel)
+
+        self.horizontalSpacer_11 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_29.addItem(self.horizontalSpacer_11)
+
 
         self.verticalLayout_10.addLayout(self.horizontalLayout_29)
 
@@ -977,6 +998,62 @@ class Ui_LoginNew(object):
 
         self.horizontalLayout_3.addWidget(self.tabWidget)
 
+        QWidget.setTabOrder(self.testIpButton, self.autoSign)
+        QWidget.setTabOrder(self.autoSign, self.ipListEdit)
+        QWidget.setTabOrder(self.ipListEdit, self.proxyIpEdit)
+        QWidget.setTabOrder(self.proxyIpEdit, self.passwdEdit_2)
+        QWidget.setTabOrder(self.passwdEdit_2, self.userEdit_2)
+        QWidget.setTabOrder(self.userEdit_2, self.loginButton)
+        QWidget.setTabOrder(self.loginButton, self.scrollArea_4)
+        QWidget.setTabOrder(self.scrollArea_4, self.answer1Edit)
+        QWidget.setTabOrder(self.answer1Edit, self.answer3Edit)
+        QWidget.setTabOrder(self.answer3Edit, self.passwdEdit)
+        QWidget.setTabOrder(self.passwdEdit, self.nameEdit)
+        QWidget.setTabOrder(self.nameEdit, self.userEdit)
+        QWidget.setTabOrder(self.userEdit, self.question3Edit)
+        QWidget.setTabOrder(self.question3Edit, self.birthdayEdit)
+        QWidget.setTabOrder(self.birthdayEdit, self.answer2Edit)
+        QWidget.setTabOrder(self.answer2Edit, self.question1Edit)
+        QWidget.setTabOrder(self.question1Edit, self.question2Edit)
+        QWidget.setTabOrder(self.question2Edit, self.gender_m)
+        QWidget.setTabOrder(self.gender_m, self.gender_f)
+        QWidget.setTabOrder(self.gender_f, self.gender_bot)
+        QWidget.setTabOrder(self.gender_bot, self.registerButton)
+        QWidget.setTabOrder(self.registerButton, self.userChangeEdit)
+        QWidget.setTabOrder(self.userChangeEdit, self.passwordChangeEdit)
+        QWidget.setTabOrder(self.passwordChangeEdit, self.newPasswordEdit)
+        QWidget.setTabOrder(self.newPasswordEdit, self.verfyButton)
+        QWidget.setTabOrder(self.verfyButton, self.commandLinkButton_3)
+        QWidget.setTabOrder(self.commandLinkButton_3, self.scrollArea_3)
+        QWidget.setTabOrder(self.scrollArea_3, self.proxy_0)
+        QWidget.setTabOrder(self.proxy_0, self.proxy_1)
+        QWidget.setTabOrder(self.proxy_1, self.httpLine)
+        QWidget.setTabOrder(self.httpLine, self.proxy_2)
+        QWidget.setTabOrder(self.proxy_2, self.sockEdit)
+        QWidget.setTabOrder(self.sockEdit, self.proxy_3)
+        QWidget.setTabOrder(self.proxy_3, self.apiTimeout)
+        QWidget.setTabOrder(self.apiTimeout, self.imgTimeout)
+        QWidget.setTabOrder(self.imgTimeout, self.echBox)
+        QWidget.setTabOrder(self.echBox, self.dohLine)
+        QWidget.setTabOrder(self.dohLine, self.dohTool)
+        QWidget.setTabOrder(self.dohTool, self.testSpeedButton)
+        QWidget.setTabOrder(self.testSpeedButton, self.radioButton_3)
+        QWidget.setTabOrder(self.radioButton_3, self.radio_img_5)
+        QWidget.setTabOrder(self.radio_img_5, self.radio_img_6)
+        QWidget.setTabOrder(self.radio_img_6, self.radio_img_2)
+        QWidget.setTabOrder(self.radio_img_2, self.radioButton_5)
+        QWidget.setTabOrder(self.radioButton_5, self.radioButton_6)
+        QWidget.setTabOrder(self.radioButton_6, self.radio_img_1)
+        QWidget.setTabOrder(self.radio_img_1, self.radioButton_2)
+        QWidget.setTabOrder(self.radioButton_2, self.radioButton_1)
+        QWidget.setTabOrder(self.radioButton_1, self.radio_img_3)
+        QWidget.setTabOrder(self.radio_img_3, self.radioButton_4)
+        QWidget.setTabOrder(self.radioButton_4, self.radio_img_4)
+        QWidget.setTabOrder(self.radio_img_4, self.saveBox)
+        QWidget.setTabOrder(self.saveBox, self.autoBox)
+        QWidget.setTabOrder(self.autoBox, self.tableWidget)
+        QWidget.setTabOrder(self.tableWidget, self.cdnLinkButton)
+        QWidget.setTabOrder(self.cdnLinkButton, self.tabWidget)
 
         self.retranslateUi(LoginNew)
 
@@ -1085,6 +1162,8 @@ class Ui_LoginNew(object):
         self.radio_img_4.setText(QCoreApplication.translate("LoginNew", u"IP\u5206\u6d41", None))
         self.testIpButton.setText(QCoreApplication.translate("LoginNew", u"\u6d4b\u8bd5IP\u5206\u6d41", None))
         self.label_25.setText(QCoreApplication.translate("LoginNew", u"*\u4f7f\u7528\u4ee3\u7406\u65f6IP\u5206\u6d41\u4e0d\u751f\u6548\uff0c\u63a8\u8350\u5f00\u542fECH\u529f\u80fd", None))
+        self.label_2.setText(QCoreApplication.translate("LoginNew", u"\u81ea\u5b9a\u4e49\u83b7\u53d6ProxyIP\u5730\u533a\uff1a", None))
+        self.proxyIpLabel.setText("")
         self.label_22.setText(QCoreApplication.translate("LoginNew", u"\u81ea\u5b9a\u4e49IP\u5217\u8868\uff08\u9017\u53f7\u5206\u5272\uff09\uff1a", None))
         ___qtablewidgetitem = self.tableWidget.horizontalHeaderItem(0)
         ___qtablewidgetitem.setText(QCoreApplication.translate("LoginNew", u"\u540d\u79f0", None));

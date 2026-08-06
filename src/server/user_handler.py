@@ -528,6 +528,34 @@ class GetEchConfigReqHandler(object):
                 TaskBase.taskObj.taskBack.emit(task.backParam, pickle.dumps(data))
 
 
+@handler(req.GetProxyIpInfoReq)
+class GetProxyIpInfoReqHandler(object):
+    def __call__(self, task):
+        data = {"st": task.status, "data": task.res.GetText()}
+        try:
+            if task.status != Status.Ok:
+                return
+            
+            from natsort import natsorted
+            ips = json.loads(task.res.raw.content)
+            allIps = []
+            if isinstance(ips, list):
+                for ip in ips:
+                    v = ip.split(":")
+                    if not v or not v[0]:
+                        continue
+                    allIps.append(v[0])
+                data['list'] = natsorted(allIps)
+            else:
+                data['list'] = []
+        except Exception as es:
+            data["st"] = Status.ParseError
+            Log.Error(es)
+        finally:
+            if task.backParam:
+                TaskBase.taskObj.taskBack.emit(task.backParam, pickle.dumps(data))
+
+
 @handler(req.SpeedTestPingReq)
 @handler(req.SpeedTestPing2Req)
 class SpeedTestPingHandler(object):

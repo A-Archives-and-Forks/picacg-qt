@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>722</width>
+    <width>812</width>
     <height>690</height>
    </rect>
   </property>
@@ -727,9 +727,9 @@
             <property name="geometry">
              <rect>
               <x>0</x>
-              <y>0</y>
-              <width>479</width>
-              <height>3233</height>
+              <y>-187</y>
+              <width>569</width>
+              <height>3253</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1375,7 +1375,51 @@
               </layout>
              </item>
              <item>
-              <layout class="QHBoxLayout" name="horizontalLayout_29"/>
+              <layout class="QHBoxLayout" name="horizontalLayout_29">
+               <item>
+                <widget class="QLabel" name="label_2">
+                 <property name="text">
+                  <string>自定义获取ProxyIP地区：</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="TipLineEdit" name="proxyIpEdit">
+                 <property name="maximumSize">
+                  <size>
+                   <width>80</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="proxyIpLabel">
+                 <property name="minimumSize">
+                  <size>
+                   <width>80</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string/>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_11">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
              </item>
              <item>
               <layout class="QHBoxLayout" name="horizontalLayout_26">
@@ -1490,14 +1534,73 @@
    <header location="global">component.tab.base_table_widget.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>testIpButton</tabstop>
+  <tabstop>autoSign</tabstop>
+  <tabstop>ipListEdit</tabstop>
+  <tabstop>proxyIpEdit</tabstop>
+  <tabstop>passwdEdit_2</tabstop>
+  <tabstop>userEdit_2</tabstop>
+  <tabstop>loginButton</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>answer1Edit</tabstop>
+  <tabstop>answer3Edit</tabstop>
+  <tabstop>passwdEdit</tabstop>
+  <tabstop>nameEdit</tabstop>
+  <tabstop>userEdit</tabstop>
+  <tabstop>question3Edit</tabstop>
+  <tabstop>birthdayEdit</tabstop>
+  <tabstop>answer2Edit</tabstop>
+  <tabstop>question1Edit</tabstop>
+  <tabstop>question2Edit</tabstop>
+  <tabstop>gender_m</tabstop>
+  <tabstop>gender_f</tabstop>
+  <tabstop>gender_bot</tabstop>
+  <tabstop>registerButton</tabstop>
+  <tabstop>userChangeEdit</tabstop>
+  <tabstop>passwordChangeEdit</tabstop>
+  <tabstop>newPasswordEdit</tabstop>
+  <tabstop>verfyButton</tabstop>
+  <tabstop>commandLinkButton_3</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>proxy_0</tabstop>
+  <tabstop>proxy_1</tabstop>
+  <tabstop>httpLine</tabstop>
+  <tabstop>proxy_2</tabstop>
+  <tabstop>sockEdit</tabstop>
+  <tabstop>proxy_3</tabstop>
+  <tabstop>apiTimeout</tabstop>
+  <tabstop>imgTimeout</tabstop>
+  <tabstop>echBox</tabstop>
+  <tabstop>dohLine</tabstop>
+  <tabstop>dohTool</tabstop>
+  <tabstop>testSpeedButton</tabstop>
+  <tabstop>radioButton_3</tabstop>
+  <tabstop>radio_img_5</tabstop>
+  <tabstop>radio_img_6</tabstop>
+  <tabstop>radio_img_2</tabstop>
+  <tabstop>radioButton_5</tabstop>
+  <tabstop>radioButton_6</tabstop>
+  <tabstop>radio_img_1</tabstop>
+  <tabstop>radioButton_2</tabstop>
+  <tabstop>radioButton_1</tabstop>
+  <tabstop>radio_img_3</tabstop>
+  <tabstop>radioButton_4</tabstop>
+  <tabstop>radio_img_4</tabstop>
+  <tabstop>saveBox</tabstop>
+  <tabstop>autoBox</tabstop>
+  <tabstop>tableWidget</tabstop>
+  <tabstop>cdnLinkButton</tabstop>
+  <tabstop>tabWidget</tabstop>
+ </tabstops>
  <resources>
   <include location="../res/images.qrc"/>
  </resources>
  <connections/>
  <buttongroups>
+  <buttongroup name="radioProxyGroup"/>
+  <buttongroup name="radioApiGroup"/>
   <buttongroup name="radioImgGroup"/>
   <buttongroup name="sexGroup"/>
-  <buttongroup name="radioApiGroup"/>
-  <buttongroup name="radioProxyGroup"/>
  </buttongroups>
 </ui>

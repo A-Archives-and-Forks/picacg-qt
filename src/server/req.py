@@ -18,7 +18,7 @@ from tools.tool import ToolUtil
 
 
 class ServerReq(object):
-    def __init__(self, url, header=None, json=None, method="POST") -> None:
+    def __init__(self, url, header=None, json=None, method="POST", isOtherCloudFlare=False) -> None:
         self.resetCnt = 0
         self.isReload = False
         self.url = url
@@ -42,6 +42,7 @@ class ServerReq(object):
 
         host = ToolUtil.GetUrlHost(url)
         self.timeout = 5
+        self.isOtherCloudFlare = isOtherCloudFlare
         self.isApi = False
         self.isImg = False
         if host in GlobalConfig.AllApiDomain.value:
@@ -110,7 +111,7 @@ class ServerReq(object):
         self.curl_opt = dict()
         self.curl_opt[CurlOpt.HTTP_VERSION] = CurlHttpVersion.V2_0
         host = ToolUtil.GetUrlHost(self.url)
-        isEch = isEch and (self.isImg or self.isApi ) and not self.proxyUrl
+        isEch = isEch and (self.isImg or self.isApi or self.isOtherCloudFlare) and not self.proxyUrl
         # allUrls = GlobalConfig.DohUrlList.value[:]
         # allUrls.extend(GlobalConfig.NoHttp3Url.value[:])
         # allUrls.append(Setting.DohAddress.value)
@@ -421,7 +422,26 @@ class GetComicsRecommendation(ServerReq):
 class DownloadBookReq(ServerReq):
     def __init__(self, url, loadPath="", cachePath="", savePath="", isReload=False, resetCnt=1):
         method = "Download"
-        self.url = url
+        oldUrl = url
+        jumpDomain = {
+            "storage-b.picacomic.com": "img.picacomic.com",
+            "s3.picacomic.com": "img.picacomic.com",
+            "storage1.picacomic.com": "img.picacomic.com",
+            "storage.picacomic.com": "img.picacomic.com",
+            "storage-b.diwodiwo.xyz": "img.diwodiwo.xyz",
+            "s3.diwodiwo.xyz": "img.diwodiwo.xyz",
+            "storage1.diwodiwo.xyz": "img.diwodiwo.xyz",
+            "storage.tipatipa.xyz": "img.tipatipa.xyz",
+            "storage-b.tipatipa.xyz": "img.tipatipa.xyz",
+            "s3.tipatipa.xyz": "img.tipatipa.xyz",
+            "storage1.tipatipa.xyz": "img.tipatipa.xyz",
+        }
+        # 封面会出现301跳转，可以提前设置好域名
+        host = ToolUtil.GetUrlHost(url)
+        if "/static/tobeimg" in url and  host in jumpDomain :
+            url = url.replace(host, jumpDomain[host])
+            url = url.replace("/static/tobeimg", "")
+
         # if self.imageServer and host in GlobalConfig.ImageServerList.value:
         #     if not ToolUtil.IsipAddress(self.imageServer):
         #         ## 图片域名
@@ -433,6 +453,7 @@ class DownloadBookReq(ServerReq):
         self.cachePath = cachePath
         self.savePath = savePath
         self.isReset = False
+        self.url = url
         super(self.__class__, self).__init__(url, ToolUtil.GetHeader(url, method),
                                              {}, method)
         self.resetCnt = resetCnt
@@ -1046,7 +1067,7 @@ class SpeedTestPing2Req(ServerReq):
         self.timeout = 3
 
 
-# Doh域名解析
+# 获取ip信息
 class GetIpInfoReq(ServerReq):
     def __init__(self, ip=""):
         url = f"https://parse.jpacg.cc/ipinfo?ip={ip}"
@@ -1059,3 +1080,17 @@ class GetIpInfoReq(ServerReq):
         self.isParseRes = False
         self.resetUrl = [f"https://parse2.jpacg.cc/ipinfo?ip={ip}"]
         self.resetCnt = 2
+        
+
+# 获取proxyip
+class GetProxyIpInfoReq(ServerReq):
+    def __init__(self, country=""):
+        if country:
+            url = f"https://check.proxyip.cmliussss.net/resolve?proxyip=proxyip.{country}.cmliussss.net"
+        else:
+            url = f"https://check.proxyip.cmliussss.net/resolve?proxyip=proxyip.proxyip.cmliussss.net"
+        method = "GET"
+        super(self.__class__, self).__init__(url, {}, {}, method, isOtherCloudFlare=True)
+        self.timeout = 5
+        self.headers = {}
+        self.isParseRes = False

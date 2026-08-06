@@ -137,10 +137,15 @@ class LoginProxyNewWidget(object):
 
         self.proxyIpGroup = QButtonGroup(self.owner)
         self.proxyIpGroup.setExclusive(True)
+        self.otherProxyIps = Setting.ProxyIpLastList.value.split(",")
+        if not self.otherProxyIps:
+            self.otherProxyIps = GlobalConfig.ProxyIpList.value[:]
+
         self.ShowAllItem()
         self.LoadHistory()
         self.Sort()
         self.cdnIndex = 4
+        self.owner.proxyIpEdit.SetWordData(["JP", "US", "HK", "SG", "KR", "GB", "FR", "NL"])
         pass
 
     def SetEnabled(self, enabled):
@@ -194,6 +199,9 @@ class LoginProxyNewWidget(object):
         #     partial(QtOwner().settingView.CheckButtonEvent, Setting.IsOpenHTTP3, self.owner.http3Box))
         self.owner.ipListEdit.editingFinished.connect(
             partial(QtOwner().settingView.LineEditEvent, Setting.PreferCDNList, self.owner.ipListEdit))
+        self.owner.proxyIpEdit.editingFinished.connect(
+            partial(QtOwner().settingView.LineEditEvent, Setting.ProxyIpCountry, self.owner.proxyIpEdit))
+
         self.proxyIpGroup.buttonClicked.connect(self.SaveProxyIp)
         self.owner.radioApiGroup.buttonClicked.connect(QtOwner().UpdateProxyName)
         self.owner.radioImgGroup.buttonClicked.connect(QtOwner().UpdateProxyName)
@@ -269,6 +277,7 @@ class LoginProxyNewWidget(object):
         self.owner.dohLine.setText(Setting.DohAddress.value)
         # self.owner.http3Box.setChecked(bool(Setting.IsOpenHTTP3.value))
         self.owner.ipListEdit.setText(Setting.PreferCDNList.value)
+        self.owner.proxyIpEdit.setText(Setting.ProxyIpCountry.value)
 
     def SaveSetting(self):
         Setting.IsHttpProxy.SetValue(int(self.owner.radioProxyGroup.checkedId()))
@@ -314,7 +323,7 @@ class LoginProxyNewWidget(object):
         self.checkResult = None
         self.checkDohUrl = self.owner.dohLine.text()
         self.SetDohIcon()
-        url = GlobalConfig().AllApiDomain.value[0]
+        url = GlobalConfig.AllApiDomain.value[0]
         request = req.DnsOverHttpsReq(url, self.checkDohUrl)
         self.owner.AddHttpTask(request, self.CheckDohBack, self.checkDohUrl)
 
@@ -360,17 +369,33 @@ class LoginProxyNewWidget(object):
     #     return
 
     def StartTestIp(self):
-        self.ShowAllItem()
         self.owner.testIpButton.setEnabled(False)
+        self.StartGetProxyIp()
+    
+    def StartGetProxyIp(self):
+        request = req.GetProxyIpInfoReq(self.owner.proxyIpEdit.text())
+        self.owner.AddHttpTask(request, self.GetProxyIpBack)
+    
+    def GetProxyIpBack(self, raw):
+        st = raw["st"]
+        if st == Str.Ok:
+            ipList = raw.get("list", [])    
+            self.otherProxyIps = ipList
+
+            self.owner.proxyIpLabel.setText(f"<font color=#d71345>成功获取{len(ipList)}个节点</font>")
+            Setting.ProxyIpLastList.SetValue(",".join(self.otherProxyIps))
+        else:
+
+            self.owner.proxyIpLabel.setText("<font color=#d71345>{}</font>".format(Str.GetStr(st)))
+            Setting.ProxyIpLastList.SetValue("")
+        if not self.otherProxyIps:
+            self.otherProxyIps = GlobalConfig.ProxyIpList.value[:]
+        self.StartTestIp2()       
+    
+    def StartTestIp2(self):
+        self.ShowAllItem()
         # url = GlobalConfig.CdnApiUrl.value
         self.maxSpeedIpCnt = len(self.allItems)
-
-        request = req.GetIpInfoReq()
-        request.SetProxy(0, "", "")
-        request.SetIndex(0, 0)
-        request.SetCurlOpt(False, "")
-        self.owner.AddHttpTask(request)
-
         for item in self.allItems.values():
             request = req.SpeedTestPingReq()
             request.SetProxy(0, "", "")
@@ -527,7 +552,6 @@ class LoginProxyNewWidget(object):
             else:
                 item.isSelect = False
 
-
     def ShowAllItem(self):
         self.ClearAllItem()
         oldItems = {}
@@ -535,9 +559,31 @@ class LoginProxyNewWidget(object):
             oldItems[v.ip] = v
         self.allItems = {}
         index = 0
+        allips = set()
+
+        for j, ip in enumerate(self.otherProxyIps):
+            if not ip:
+                continue
+
+            if ip in allips:
+                continue
+            allips.add(ip)
+
+            item = IpItem(index, j + 1, ip, True, False)
+            item.isSelect = ip == Setting.ProxyIpValue.value
+            self.allItems[index] = item
+            if ip in oldItems:
+                item.Copy(oldItems[ip])
+            self.AddRow(index)
+            self.UpdateRow(item)
+            index += 1
+
         for j, ip in enumerate(re.split(r'[、，；;,\s]\s*', Setting.PreferCDNList.value)):
             if not ip:
                 continue
+            if ip in allips:
+                continue
+            allips.add(ip)
             item = IpItem(index, j+1, ip,False, True)
             item.isSelect = ip == Setting.ProxyIpValue.value
             self.allItems[index] = item
@@ -549,6 +595,11 @@ class LoginProxyNewWidget(object):
         for j, ip in enumerate(GlobalConfig.BestCfIpList.value):
             if not ip:
                 continue
+            
+            if ip in allips:
+                continue
+            allips.add(ip)
+            
             item = IpItem(index, j+1, ip,False, False)
             item.isSelect = ip == Setting.ProxyIpValue.value
             self.allItems[index] = item
@@ -557,17 +608,7 @@ class LoginProxyNewWidget(object):
             self.AddRow(index)
             self.UpdateRow(item)
             index += 1
-        for j, ip in enumerate(GlobalConfig.ProxyIpList.value):
-            if not ip:
-                continue
-            item = IpItem(index, j+1, ip,True, False)
-            item.isSelect = ip == Setting.ProxyIpValue.value
-            self.allItems[index] = item
-            if ip in oldItems:
-                item.Copy(oldItems[ip])
-            self.AddRow(index)
-            self.UpdateRow(item)
-            index += 1
+
         # self.owner.tableWidget.resizeColumnsToContents()
         # self.owner.tableWidget.resizeRowsToContents()
 

@@ -116,6 +116,7 @@ class Setting:
     PreIpv6 = SettingValue("ProxySetting", 0, False)
     LastProxyResult = SettingValue("ProxySetting", {}, False)
     # IsUseSniPretend = SettingValue("ProxySetting", 1, False)
+    ProxyIpLastList =  SettingValue("ProxySetting", "", False)
     ProxyIpValue =  SettingValue("ProxySetting", "", False)
 
     ProxySelectIndex = SettingValue("ProxySetting", 1, False)
@@ -125,6 +126,7 @@ class Setting:
     ImgTimeOut = SettingValue("ProxySetting", 1, False, [2, 5, 7, 10, 15])
     IsUseApi26 = SettingValue("ProxySetting", 0, False)
     LastIpResult = SettingValue("ProxySetting", {}, False)
+    ProxyIpCountry = SettingValue("ProxySetting", "", False)
 
     IsOpenDoh = SettingValue("ProxySetting", 0, False)
     DohAddress = SettingValue("ProxySetting", "https://parse.jpacg.cc/parse", False)
