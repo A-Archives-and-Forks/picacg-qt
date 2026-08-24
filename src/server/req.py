@@ -22,7 +22,9 @@ class ServerReq(object):
         self.resetCnt = 0
         self.isReload = False
         self.url = url
-        self.resetUrlHost = []
+        # self.resetUrlHost = []
+        self.resetUrl = []
+        self.resetIndex = 0
 
         self.file = ""
         self.token = ""
@@ -137,24 +139,19 @@ class ServerReq(object):
                             self.curl_opt[CurlOpt.RESOLVE].append(f"{host2}:443:{ipStr}")
 
     def ResetToSwitchNextUrl(self):
-        if not self.resetUrlHost:
+        if not self.resetUrl:
             return False
-        host = ToolUtil.GetUrlHost(self.url)
-        if host in self.resetUrlHost:
-            index = self.resetUrlHost.index(host)
-            if index >= len(self.resetUrlHost)-1:
-                return False
-            newHost = self.resetUrlHost[index+1]
-            host = ToolUtil.GetUrlHost(self.url)
-            self.url = self.url.replace(host, newHost)
-            Log.Info("request 404 switch:{}->{}".format(host, newHost))
-            return True
-        else:
-            newHost = self.resetUrlHost[0]
-            host = ToolUtil.GetUrlHost(self.url)
-            self.url = self.url.replace(host, newHost)
-            Log.Info("request 404 switch:{}->{}".format(host, newHost))
-            return True
+        if self.resetIndex >= len(self.resetUrl):
+            self.resetIndex = 0
+        url = self.resetUrl[self.resetIndex]
+        self.resetIndex += 1
+        if self.proxyUrl:
+            host = ToolUtil.GetUrlHost(url)
+            url = url.replace(host, self.proxyUrl + "/" + host)
+
+        Log.Info("request switch url:{}->{}".format(self.url, url))
+        self.url = url
+        return True
 
     def GetPri(self):
         ech = False
@@ -441,7 +438,9 @@ class DownloadBookReq(ServerReq):
         if "/static/tobeimg" in url and  host in jumpDomain :
             url = url.replace(host, jumpDomain[host])
             url = url.replace("/static/tobeimg", "")
-
+            allDomain = ["img.picacomic.com", "img.diwodiwo.xyz", "img.tipatipa.xyz"]
+        else:
+            allDomain = ["storage-b.picacomic.com", "s3.picacomic.com", "storage1.diwodiwo.xyz", "storage.tipatipa.xyz"]
         # if self.imageServer and host in GlobalConfig.ImageServerList.value:
         #     if not ToolUtil.IsipAddress(self.imageServer):
         #         ## 图片域名
@@ -456,8 +455,13 @@ class DownloadBookReq(ServerReq):
         self.url = url
         super(self.__class__, self).__init__(url, ToolUtil.GetHeader(url, method),
                                              {}, method)
-        self.resetCnt = resetCnt
         self.isReload = isReload
+        realHost = ToolUtil.GetUrlHost(url)
+        if realHost in allDomain:
+            allDomain.remove(realHost)
+        self.resetUrl = [self.url.replace(realHost, i) for i in allDomain]
+        self.resetCnt = max(resetCnt, len(self.resetUrl))
+
 
 # 获得评论
 class GetCommentsReq(ServerReq):
@@ -651,7 +655,7 @@ class SpeedTestReq(ServerReq):
         self.isReset = False
         super(self.__class__, self).__init__(url, header,
                                              {}, method)
-        self.resetCnt = 1
+        self.resetCnt = 0
         self.isParseRes = False
         self.isReload = False
 
@@ -1079,7 +1083,7 @@ class GetIpInfoReq(ServerReq):
         }
         self.isParseRes = False
         self.resetUrl = [f"https://parse2.jpacg.cc/ipinfo?ip={ip}"]
-        self.resetCnt = 2
+        self.resetCnt = len(self.resetUrl)
         
 
 # 获取proxyip

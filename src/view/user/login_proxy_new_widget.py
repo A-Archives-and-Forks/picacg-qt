@@ -201,6 +201,8 @@ class LoginProxyNewWidget(object):
             partial(QtOwner().settingView.LineEditEvent, Setting.PreferCDNList, self.owner.ipListEdit))
         self.owner.proxyIpEdit.editingFinished.connect(
             partial(QtOwner().settingView.LineEditEvent, Setting.ProxyIpCountry, self.owner.proxyIpEdit))
+        self.owner.dohLine.editingFinished.connect(
+            partial(QtOwner().settingView.LineEditEvent, Setting.DohAddress, self.owner.dohLine))
 
         self.proxyIpGroup.buttonClicked.connect(self.SaveProxyIp)
         self.owner.radioApiGroup.buttonClicked.connect(QtOwner().UpdateProxyName)

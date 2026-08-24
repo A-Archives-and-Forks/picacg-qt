@@ -360,7 +360,7 @@ class Server(Singleton):
             Log.Info("response{}-> backId:{}, {}, st:{}, {}".format(index, task.backParam, task.req.__class__.__name__,
                                                                     task.status, task.res))
 
-        if task.status != Status.Ok and task.req.resetCnt > 0:
+        if task.status != Status.Ok and task.req.resetCnt >= 0:
             task.req.ResetToSwitchNextUrl()
             self._Send(task, index, isOld)
             return

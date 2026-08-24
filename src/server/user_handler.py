@@ -3,6 +3,7 @@ import os
 import pickle
 import re
 import time
+from contextlib import closing
 from datetime import timedelta
 
 from config import config
@@ -242,66 +243,63 @@ class DownloadBookHandler(object):
             cfHit = False
             isFail = False
             try:
-                r = requests2.get(request.url,  headers=request.headers,timeout=backData.timeout,
-                               proxies=request.proxy, curl_options=request.curl_opt, stream=True)
-
-                fileSize = int(r.headers.get('Content-Length', 0))
-                cfHit = r.headers.get("cf-cache-status", False)
-
-                getSize = 0
-                data = b""
-
-                now = time.time()
-                isAlreadySend = False
-                isSpacePic = True
-                if r.status_code == 404 or r.status_code == 403 :
-                    ## 404 尝试切换图片地址
-                    isReset = backData.req.ResetToSwitchNextUrl()
-                    if isReset:
-                        Server().ReDownload(backData)
-                        return
-                    else:
-                        if backData.backParam:
-                            TaskBase.taskObj.downloadBack.emit(backData.backParam, -Status.Error, b"")
-                        return
-                elif r.status_code != 200:
-                    if backData.backParam:
-                        TaskBase.taskObj.downloadBack.emit(backData.backParam, -Status.Error, b"")
-                    return
-
-                # 网速快，太卡了，优化成最多100ms一次
                 try:
-                    # from tqdm import tqdm
-                    # with tqdm(total=fileSize, unit_scale=True, unit_divisor=1024, unit="B") as progress:
-                    #     num_bytes_downloaded = r.num_bytes_downloaded
-                    for chunk in r.iter_content():
-                        cur = time.time()
-                        tick = cur - now
-                        getSize += len(chunk)
-                        data += chunk
-                        isSpacePic = False
-                        if tick >= 0.1:
-                            isAlreadySend = True
-                            if backData.backParam and fileSize - getSize > 0:
-                                TaskBase.taskObj.downloadBack.emit(backData.backParam, fileSize - getSize, b"")
-                            now = cur
+                    with closing(requests2.get(request.url, headers=request.headers, timeout=backData.timeout,
+                                               proxies=request.proxy, curl_options=request.curl_opt, stream=True)) as r:
 
-                    if not isAlreadySend:
-                        if backData.backParam:
-                            TaskBase.taskObj.downloadBack.emit(backData.backParam, getSize, b"")
+                        fileSize = int(r.headers.get('Content-Length', 0))
+                        cfHit = r.headers.get("cf-cache-status", False)
+
+                        getSize = 0
+                        data = b""
+
+                        now = time.time()
+                        isAlreadySend = False
+                        isSpacePic = False
+                        if r.status_code == 404 or r.status_code == 403 :
+                            ## 404 尝试切换图片地址
+                            isReset = backData.req.ResetToSwitchNextUrl()
+                            if isReset and backData.req.resetCnt >= 0:
+                                backData.req.isReset = True
+                                Server().ReDownload(backData)
+                                return
+                            else:
+                                if backData.backParam:
+                                    TaskBase.taskObj.downloadBack.emit(backData.backParam, -Status.Error, b"")
+                                return
+                        elif r.status_code != 200:
+                            if backData.backParam:
+                                TaskBase.taskObj.downloadBack.emit(backData.backParam, -Status.Error, b"")
+                            return
+
+                        for chunk in r.iter_content():
+                            cur = time.time()
+                            tick = cur - now
+                            getSize += len(chunk)
+                            data += chunk
+                            if tick >= 0.1:
+                                isAlreadySend = True
+                                if backData.backParam and fileSize - getSize > 0:
+                                    TaskBase.taskObj.downloadBack.emit(backData.backParam, fileSize - getSize, b"")
+                                now = cur
+                        isSpacePic = len(data) == 0
+
+                        if not isAlreadySend:
+                            if backData.backParam:
+                                TaskBase.taskObj.downloadBack.emit(backData.backParam, getSize, b"")
 
                 except Exception as es:
                     Log.Error(es)
                     isFail = True
-                    if backData.req.resetCnt > 0:
+                    if backData.req.resetCnt >= 0:
                         backData.req.isReset = True
                         Server().ReDownload(backData)
                         return
 
                 # 异常图片
-                if len(data) < 20 or isFail:
+                if isFail:
                     Log.Warn(f"download_error_picture, url:{backData.req.url}, data:{len(data)}, is_fail:{isFail}")
-                    if backData.req.resetCnt > 0:
+                    if backData.req.resetCnt >= 0:
                         backData.req.isReset = True
                         Server().ReDownload(backData)
                         return
@@ -515,17 +513,28 @@ class DnsOverHttpsReqHandler(object):
 class GetEchConfigReqHandler(object):
     def __call__(self, task):
         data = {"st": task.status, "data": task.res.GetText()}
+        isReset = False
         try:
             if task.status != Status.Ok:
                 return
+
+            if task.res.raw.status_code != 200:
+                isReset = True
+
             info = task.res.raw.content
             data['data'] = task.req.parse_dns_response(info)
         except Exception as es:
             data["st"] = Status.ParseError
             Log.Error(es)
         finally:
-            if task.backParam:
-                TaskBase.taskObj.taskBack.emit(task.backParam, pickle.dumps(data))
+            if isReset and task.req.resetCnt >= 0:
+                task.req.ResetToSwitchNextUrl()
+                task.req.isReset = True
+                Server().Send(task.req, backParam=task.backParam)
+                return
+            else:
+                if task.backParam:
+                    TaskBase.taskObj.taskBack.emit(task.backParam, pickle.dumps(data))
 
 
 @handler(req.GetProxyIpInfoReq)
