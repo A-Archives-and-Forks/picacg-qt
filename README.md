@@ -46,6 +46,7 @@
 
 ## 如何编译
   ### 使用Git Actions编译
+  运行script/build_qrc.py生成qrc文件
   1. 选择对应系统和架构
 
   ![image](https://github.com/user-attachments/assets/a5725899-6ab6-4c5c-9d13-8ceaef2e6892)
@@ -53,8 +54,8 @@
   2. 查看编译结果[Git Actions编译](https://github.com/tonquer/picacg-qt/actions)
 
 ## 我的其他项目
- [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=tonquer&repo=JMComic-qt)](https://github.com/tonquer/JMComic-qt)  
- [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=tonquer&repo=ehentai-qt)](https://github.com/tonquer/ehentai-qt)  
+ [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=tonquer&repo=JMComic-qt)](https://github.com/tonquer/JMComic-qt)  
+ [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=tonquer&repo=ehentai-qt)](https://github.com/tonquer/ehentai-qt)  
  
 ## 界面
 
@@ -72,14 +73,14 @@
 
 ## 感谢以下项目
   ### waifu2x功能
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=nagadomi&repo=waifu2x)](https://github.com/nagadomi/waifu2x)  
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=nihui&repo=waifu2x-ncnn-vulkan)](https://github.com/nagadomi/waifu2x-ncnn-vulkan)  
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=tonquer&repo=waifu2x-vulkan)](https://github.com/tonquer/waifu2x-vulkan)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=nagadomi&repo=waifu2x)](https://github.com/nagadomi/waifu2x)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=nihui&repo=waifu2x-ncnn-vulkan)](https://github.com/nagadomi/waifu2x-ncnn-vulkan)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=tonquer&repo=waifu2x-vulkan)](https://github.com/tonquer/waifu2x-vulkan)  
   ### Qt功能
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=PyQt5&repo=PyQt)](https://github.com/PyQt5/PyQt)  
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=PyQt5&repo=PyQtClient)](https://github.com/PyQt5/PyQtClient)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=PyQt5&repo=PyQt)](https://github.com/PyQt5/PyQt)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=PyQt5&repo=PyQtClient)](https://github.com/PyQt5/PyQtClient)  
   ### Qt皮肤
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=UN-GCPDS&repo=qt-material)](https://github.com/UN-GCPDS/qt-material)  
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=satchelwu&repo=QSS-Skin-Builder)](https://github.com/satchelwu/QSS-Skin-Builder)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=UN-GCPDS&repo=qt-material)](https://github.com/UN-GCPDS/qt-material)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=satchelwu&repo=QSS-Skin-Builder)](https://github.com/satchelwu/QSS-Skin-Builder)  
   ### Qt实现平滑滚动
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=zhiyiYo&repo=Groove)](https://github.com/zhiyiYo/Groove)
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=zhiyiYo&repo=Groove)](https://github.com/zhiyiYo/Groove)

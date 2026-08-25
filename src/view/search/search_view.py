@@ -12,6 +12,7 @@ from qt_owner import QtOwner
 from server import req, Log, Status
 from server.sql_server import SqlServer
 from task.qt_task import QtTaskBase
+from tools.book import BookMgr, Book
 from tools.category import CateGoryMgr
 from tools.langconv import Converter
 from tools.str import Str
@@ -223,22 +224,32 @@ class SearchView(QWidget, Ui_Search, QtTaskBase):
         try:
             commentsData = json.loads(data)
             allBookIds = []
-            for v in commentsData:
-                allBookIds.append(v.get('id'))
+            for v in commentsData.get("recommendations", []):
+                allBookIds.append(v)
             if QtOwner().owner.helpView.isHaveDb:
                 sql = SqlServer.GetBookByIds(allBookIds)
                 self.AddSqlTask("book", sql, SqlServer.TaskTypeSelectBook, callBack=self.OpenLocalRecommendationBack, backParam=1)
             else:
-                for v in commentsData:
-                    if v.get('pic'):
-                        v['thumb'] = {}
-                        host = ToolUtil.GetUrlHost(v.get('pic'))
-                        v['thumb']['fileServer'] = "https://" + host
-                        v['thumb']['path'] = v.get('pic').replace("http://", "").replace("https://", "").replace(host, "").replace("/static", "")
-                        self.bookList.AddBookByDict(v)
-            self.cacheRecommend[bookId] = data
+                for bookId in allBookIds:
+                    self.AddHttpTask(req.GetComicsBookReq(bookId), self.OpenRecommendationBack3, bookId)
+                    # if v.get('pic'):
+                    #     v['thumb'] = {}
+                    #     host = ToolUtil.GetUrlHost(v.get('pic'))
+                    #     v['thumb']['fileServer'] = "https://" + host
+                    #     v['thumb']['path'] = v.get('pic').replace("http://", "").replace("https://", "").replace(host, "").replace("/static", "")
+                    #     self.bookList.AddBookByDict(v)
+            # self.cacheRecommend[bookId] = data
         except Exception as es:
             Log.Error(es)
+
+    def OpenRecommendationBack3(self, raw, bookId):
+        book = BookMgr().GetBook(bookId)
+        if not book:
+            return
+        if raw.get("st") == Str.Ok:
+            data = json.loads(raw.get("data"))
+            self.bookList.AddBookByDict(data.get('data').get("comic"))
+        return
 
     def OpenLocalRecommendationBack(self, books, page):
         self.SendLocalBack(books, page)

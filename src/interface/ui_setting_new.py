@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QCommandLinkButton,
     QFrame, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QRadioButton, QSizePolicy, QSpacerItem,
-    QToolButton, QVBoxLayout, QWidget)
+    QSpinBox, QToolButton, QVBoxLayout, QWidget)
 
 from component.box.wheel_combo_box import WheelComboBox
 from component.box.wheel_double_spin_box import WheelDoubleSpinBox
@@ -88,7 +88,7 @@ class Ui_SettingNew(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, -406, 727, 2834))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, -1066, 727, 3035))
         self.scrollAreaWidgetContents.setStyleSheet(u"")
         self.verticalLayout_4 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
@@ -570,6 +570,27 @@ class Ui_SettingNew(object):
         self.prefetchCountLabel.setObjectName(u"prefetchCountLabel")
 
         self.prefetchCountLayout.addWidget(self.prefetchCountLabel)
+
+        self.label = QLabel(self.prefetchFrame)
+        self.label.setObjectName(u"label")
+
+        self.prefetchCountLayout.addWidget(self.label)
+
+        self.prefetchFrontCount = QSpinBox(self.prefetchFrame)
+        self.prefetchFrontCount.setObjectName(u"prefetchFrontCount")
+        self.prefetchFrontCount.setValue(3)
+
+        self.prefetchCountLayout.addWidget(self.prefetchFrontCount)
+
+        self.label_23 = QLabel(self.prefetchFrame)
+        self.label_23.setObjectName(u"label_23")
+
+        self.prefetchCountLayout.addWidget(self.label_23)
+
+        self.label_30 = QLabel(self.prefetchFrame)
+        self.label_30.setObjectName(u"label_30")
+
+        self.prefetchCountLayout.addWidget(self.label_30)
 
         self.prefetchCount = WheelSpinBox(self.prefetchFrame)
         self.prefetchCount.setObjectName(u"prefetchCount")
@@ -1467,6 +1488,9 @@ class Ui_SettingNew(object):
         self.logutton2.setText(QCoreApplication.translate("SettingNew", u"Debug\uff08\u8be5\u8bbe\u7f6e\u5185\u542b\u654f\u611f\u6570\u636e\uff0clog\u6587\u4ef6\u8bf7\u52ff\u5206\u4eab\uff09", None))
         self.prefetchLabel.setText(QCoreApplication.translate("SettingNew", u"\u56fe\u7247\u9884\u53d6", None))
         self.prefetchCountLabel.setText(QCoreApplication.translate("SettingNew", u"\u9884\u53d6\u56fe\u7247\u6570\u91cf\uff1a", None))
+        self.label.setText(QCoreApplication.translate("SettingNew", u"\u524d\uff1a", None))
+        self.label_23.setText(QCoreApplication.translate("SettingNew", u"-", None))
+        self.label_30.setText(QCoreApplication.translate("SettingNew", u"\u540e\uff1a", None))
 #if QT_CONFIG(tooltip)
         self.prefetchCountHelp.setToolTip(QCoreApplication.translate("SettingNew", u"\u8bbe\u7f6e\u5f53\u524d\u9875\u4e4b\u540e\u9884\u53d6\u7684\u56fe\u7247\u6570\u91cf\uff0c\u4e0b\u8f7d\u5e76\u53d1\u6570\u56fa\u5b9a\u4e3a5", None))
 #endif // QT_CONFIG(tooltip)

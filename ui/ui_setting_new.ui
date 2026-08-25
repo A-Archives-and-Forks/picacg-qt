@@ -102,9 +102,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-406</y>
+          <y>-1066</y>
           <width>727</width>
-          <height>2834</height>
+          <height>3035</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -986,7 +986,7 @@
              <height>40</height>
             </size>
            </property>
-         </spacer>
+          </spacer>
          </item>
          <item>
           <widget class="QLabel" name="prefetchLabel">
@@ -1018,6 +1018,34 @@
                </widget>
               </item>
               <item>
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>前：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="prefetchFrontCount">
+                <property name="value">
+                 <number>3</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_23">
+                <property name="text">
+                 <string>-</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_30">
+                <property name="text">
+                 <string>后：</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="WheelSpinBox" name="prefetchCount">
                 <property name="minimum">
                  <number>1</number>
@@ -1033,52 +1061,130 @@
               <item>
                <widget class="QLabel" name="prefetchCountHelp">
                 <property name="maximumSize">
-                 <size><width>24</width><height>24</height></size>
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
                 </property>
-                <property name="styleSheet"><string notr="true">color: rgb(110, 110, 110); font-size: 16px;</string></property>
                 <property name="toolTip">
                  <string>设置当前页之后预取的图片数量，下载并发数固定为5</string>
                 </property>
-                <property name="text"><string>ⓘ</string></property>
-                <property name="alignment"><set>Qt::AlignCenter</set></property>
+                <property name="styleSheet">
+                 <string notr="true">color: rgb(110, 110, 110); font-size: 16px;</string>
+                </property>
+                <property name="text">
+                 <string>ⓘ</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
                </widget>
               </item>
               <item>
                <spacer name="prefetchCountSpacer">
-                <property name="orientation"><enum>Qt::Horizontal</enum></property>
-                <property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
                </spacer>
               </item>
              </layout>
             </item>
             <item>
              <layout class="QHBoxLayout" name="crossChapterPrefetchLayout">
-              <item><widget class="QCheckBox" name="crossChapterPrefetch"><property name="text"><string>允许跨章节预取</string></property></widget></item>
               <item>
-               <widget class="QLabel" name="crossChapterPrefetchHelp">
-                <property name="maximumSize"><size><width>24</width><height>24</height></size></property>
-                <property name="styleSheet"><string notr="true">color: rgb(110, 110, 110); font-size: 16px;</string></property>
-                <property name="toolTip"><string>预取页数大于剩余页数时，提前预取下一章节</string></property>
-                <property name="text"><string>ⓘ</string></property>
-                <property name="alignment"><set>Qt::AlignCenter</set></property>
+               <widget class="QCheckBox" name="crossChapterPrefetch">
+                <property name="text">
+                 <string>允许跨章节预取</string>
+                </property>
                </widget>
               </item>
-              <item><spacer name="crossChapterPrefetchSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item>
+              <item>
+               <widget class="QLabel" name="crossChapterPrefetchHelp">
+                <property name="maximumSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>预取页数大于剩余页数时，提前预取下一章节</string>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">color: rgb(110, 110, 110); font-size: 16px;</string>
+                </property>
+                <property name="text">
+                 <string>ⓘ</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="crossChapterPrefetchSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
              </layout>
             </item>
             <item>
              <layout class="QHBoxLayout" name="prefetchWholeChapterLayout">
-              <item><widget class="QCheckBox" name="prefetchWholeChapter"><property name="text"><string>预取当前章节剩余全部图片</string></property></widget></item>
               <item>
-               <widget class="QLabel" name="prefetchWholeChapterHelp">
-                <property name="maximumSize"><size><width>24</width><height>24</height></size></property>
-                <property name="styleSheet"><string notr="true">color: rgb(110, 110, 110); font-size: 16px;</string></property>
-                <property name="toolTip"><string>忽略预取数量限制，预取当前页之后直到本章末尾的全部图片</string></property>
-                <property name="text"><string>ⓘ</string></property>
-                <property name="alignment"><set>Qt::AlignCenter</set></property>
+               <widget class="QCheckBox" name="prefetchWholeChapter">
+                <property name="text">
+                 <string>预取当前章节剩余全部图片</string>
+                </property>
                </widget>
               </item>
-              <item><spacer name="prefetchWholeChapterSpacer"><property name="orientation"><enum>Qt::Horizontal</enum></property><property name="sizeHint" stdset="0"><size><width>40</width><height>20</height></size></property></spacer></item>
+              <item>
+               <widget class="QLabel" name="prefetchWholeChapterHelp">
+                <property name="maximumSize">
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>忽略预取数量限制，预取当前页之后直到本章末尾的全部图片</string>
+                </property>
+                <property name="styleSheet">
+                 <string notr="true">color: rgb(110, 110, 110); font-size: 16px;</string>
+                </property>
+                <property name="text">
+                 <string>ⓘ</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="prefetchWholeChapterSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
              </layout>
             </item>
            </layout>
@@ -1086,14 +1192,25 @@
          </item>
          <item>
           <widget class="Line" name="prefetchLine">
-           <property name="orientation"><enum>Qt::Horizontal</enum></property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
           </widget>
          </item>
          <item>
           <spacer name="prefetchSpacer">
-           <property name="orientation"><enum>Qt::Vertical</enum></property>
-           <property name="sizeType"><enum>QSizePolicy::Minimum</enum></property>
-           <property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Minimum</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
           </spacer>
          </item>
          <item>
@@ -2504,12 +2621,11 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="proxyGroup"/>
   <buttongroup name="logGroup"/>
-  <buttongroup name="themeGroup"/>
+  <buttongroup name="proxyGroup"/>
   <buttongroup name="languageGroup"/>
   <buttongroup name="showCloseButtonGroup"/>
+  <buttongroup name="themeGroup"/>
   <buttongroup name="saveNameGroup"/>
-  <buttongroup name="mainScaleGroup"/>
  </buttongroups>
 </ui>

@@ -52,6 +52,7 @@ class Book(object):
         self.maxLoadEps = 0
         self.epsLimit = 0
         self.epsDict = {}
+        self.thumb = {}
 
     @property
     def id(self):

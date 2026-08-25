@@ -138,5 +138,10 @@ history.db
 # Downloaded Commies for PicACG
 commies/
 test/
+src/images_rc.py
 src/data/cache_word
 src/data/local_read.db
+src/data/batch_sr_tool.db
+src/data/nas.db
+src/data/favorite.db
+src/db/book.db*

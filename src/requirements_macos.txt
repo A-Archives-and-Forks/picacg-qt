@@ -11,5 +11,6 @@ tqdm
 pysmb
 # pywin32==302
 lxml
-smbprotocol
 curl_cffi>=0.13.0,<=0.15.0
+cryptography==44.0.3
+smbprotocol

@@ -96,6 +96,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         self.qtTool.modelNameButton.setText(ToolUtil.GetShowModelName(Setting.LookModelName.value))
         self.qtTool.modelNameButton.setToolTip(Setting.LookModelName.value)
 
+
     def SelectMenu(self):
         popMenu = QMenu(self)
         action = popMenu.addAction(Str.GetStr(Str.Menu)+"(F12)")
@@ -103,6 +104,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
 
         action = popMenu.addAction(Str.GetStr(Str.FullSwitch)+"(F11)")
         action.triggered.connect(self.qtTool.FullScreen)
+
         if config.CanWaifu2x:
             if Setting.IsOpenWaifu.value:
                 action = popMenu.addAction(Str.GetStr(Str.CloseAutoWaifu2x))
@@ -120,7 +122,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
                 action.triggered.connect(self.qtTool.curWaifu2x.click)
 
         menu2 = popMenu.addMenu(Str.GetStr(Str.ReadMode))
-        action = menu2.addAction("切换双页对齐(F10)")
+        action = menu2.addAction(Str.GetStr(Str.ToggleDoublePageAlign) + "(F10)")
         action.triggered.connect(self.ChangeDoublePage)
 
         def AddReadMode(name, value):
@@ -138,6 +140,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         AddReadMode(Str.GetStr(Str.RightLeftScroll), 5)
         AddReadMode(Str.GetStr(Str.RightLeftDouble2), 6)
         AddReadMode(Str.GetStr(Str.SameWight), 7)
+        AddReadMode(Str.GetStr(Str.RightLeftScroll2), 8)
 
         menu3 = popMenu.addMenu(Str.GetStr(Str.Scale)+ "(- +)")
 
@@ -329,37 +332,33 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
             p.isWaifu2x = isWaifu2x
 
     def CheckLoadPicture(self):
-        # i = 0
-        newDict = {}
-        needUp = False
-        removeTaskIds = []
-
         if not self.maxPic:
             return
 
+        # 预转换QImage
+        preRealQImage = list(range(max(0, self.curIndex-min(2, Setting.PicturePrefetchFrontCount.value)), self.curIndex + config.PreLook))
+
         # The setting counts pages after the current page. Keep the current page
         # in memory separately, so page 10 + count 10 means pages 11 through 20.
-        prefetchEnd = self.curIndex + Setting.PicturePrefetchCount.value + 1
+        # 预下载
+        preLoadList = list(range(max(0, self.curIndex-Setting.PicturePrefetchFrontCount.value), self.curIndex + Setting.PicturePrefetchCount.value + 1))
         if Setting.PrefetchWholeChapter.value:
             prefetchEnd = self.maxPic
-        preLoadList = list(range(self.curIndex, prefetchEnd))
-        preQImage = list(range(self.curIndex, self.curIndex + config.PreLook))
+            preLoadList = list(range(max(0, self.curIndex-Setting.PicturePrefetchFrontCount.value), prefetchEnd))
 
-        # 预加载上一页
-        if len(preLoadList) >= 2 and self.curIndex > 0:
-            preLoadList.insert(2, self.curIndex - 1)
+        preLoadList.sort(key=lambda a:(abs(a-self.curIndex), self.curIndex-a))
+        preRealQImage.sort(key=lambda a:(abs(a-self.curIndex), self.curIndex-a))
 
-        for i, p in self.pictureData.items():
-            if i in preLoadList:
-                newDict[i] = p
-            else:
-                needUp = True
-                if p.waifu2xTaskId > 0:
-                    removeTaskIds.append(p.waifu2xTaskId)
+        removeKeys = set(self.pictureData.keys()) - set(preLoadList)
 
-        if needUp:
-            self.pictureData.clear()
-            self.pictureData = newDict
+        removeTaskIds = []
+        # 移除非下载的页
+        for key in removeKeys:
+            p = self.pictureData[key]
+            self.pictureData.pop(key, None)
+            if p.waifu2xTaskId > 0:
+                removeTaskIds.append(p.waifu2xTaskId)
+        if removeTaskIds:
             self.ClearWaitConvertIds(removeTaskIds)
 
         if not self.bookId:
@@ -368,15 +367,17 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         activeDownloads = sum(1 for i in preLoadList
                               if i in self.pictureData
                               and self.pictureData[i].state == QtFileData.Downloading)
+
+        # 添加下载的页
         for i in preLoadList:
             if i >= self.maxPic or i < 0:
                 continue
-
             p = self.pictureData.get(i)
             if not p and activeDownloads < PICTURE_PREFETCH_CONCURRENCY:
                 self.AddDownload(i)
                 activeDownloads += 1
 
+        # 添加超分的任务
         for i in preLoadList:
             if i >= self.maxPic or i < 0:
                 continue
@@ -392,18 +393,21 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
             if p.waifuState == p.WaifuStateStart:
                 break
 
-        for i in preQImage:
+        # 添加转换到QImage任务
+        for i in preRealQImage:
             p = self.pictureData.get(i)
             if not p or not p.data:
                 continue
             assert isinstance(p, QtFileData)
-            if not (p.cacheImage or p.cacheImageTaskId > 0):
+            IsConvert = (p.cacheWaifu2xImageTaskId > 0 or not not p.cacheWaifu2xImage)
+            if not (not p.waifuData or p.cacheWaifu2xImage or p.cacheWaifu2xImageTaskId > 0):
+                IsConvert = self.CheckToQImage(i, p, True)
+
+            if (not IsConvert or not p.isWaifu2x) and not (p.cacheImage or p.cacheImageTaskId > 0):
                 self.CheckToQImage(i, p, False)
 
-            if not (not p.waifuData or p.cacheWaifu2xImage or p.cacheWaifu2xImageTaskId > 0):
-                self.CheckToQImage(i, p, True)
-
-        for i in set(self.pictureData.keys()) - set(preQImage):
+        # 删除多余的QImage，节约内存
+        for i in set(self.pictureData.keys()) - set(preRealQImage):
             p = self.pictureData.get(i)
             if not p:
                 continue
@@ -416,6 +420,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
                 p.cacheWaifu2xImageTaskId = 0
             p.cacheImage = None
             p.cacheWaifu2xImage = None
+
         self.CheckCrossChapterPrefetch()
         pass
 
@@ -458,7 +463,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
             info.size = laveFileSize
         info.downloadSize += downloadSize
         if ReadMode.isDouble(self.stripModel):
-            if self.stripModel in [ReadMode.RightLeftDouble, ReadMode.RightLeftDouble2, ReadMode.RightLeftDoubleAlone]:
+            if self.stripModel in [ReadMode.RightLeftDouble, ReadMode.RightLeftDouble2]:
                 if backParam == self.curIndex:
                     self.frame.UpdateProcessBar(info)
                 elif backParam == self.curIndex + 1:
@@ -501,11 +506,14 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
                 p.cacheImage = None
                 p.cacheImageScale = self.frame.scaleCnt
                 p.cacheImageTaskId = self.AddQImageTask(p.data, self.devicePixelRatio(), toW, toH, model, self.ConvertQImageBack, index)
+                return True
         else:
             if p.waifuData:
                 p.cacheWaifu2xImage = None
                 p.cacheWaifu2xImageScale = self.frame.scaleCnt
                 p.cacheImageWaifu2xTaskId = self.AddQImageTask(p.waifuData, self.devicePixelRatio(), toW, toH, model, self.ConvertQImageWaifu2xBack, index)
+                return True
+        return False
 
     def ConvertQImageBack(self, data, index):
         assert isinstance(data, QImage)
@@ -515,10 +523,11 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         assert isinstance(p, QtFileData)
         p.cacheImage = data
         p.cacheImageTaskId = 0
+
         if index == self.curIndex:
             self.ShowImg(index)
         elif self.stripModel in [ReadMode.UpDown, ReadMode.RightLeftScroll,
-                                 ReadMode.LeftRightScroll] and self._IsPrefetchIndex(index):
+                                 ReadMode.LeftRightScroll, ReadMode.RightLeftScroll2] and self._IsPrefetchIndex(index):
             self.ShowImg(index)
         elif ReadMode.isDouble(self.stripModel) and self.curIndex < index <= self.curIndex + 1:
             self.ShowImg(index)
@@ -572,14 +581,17 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
     #     return True
 
     def ShowImgAll(self):
-        if self.stripModel in [ReadMode.UpDown, ReadMode.RightLeftScroll, ReadMode.LeftRightScroll]:
+        if self.stripModel in [ReadMode.UpDown, ReadMode.RightLeftScroll, ReadMode.LeftRightScroll, ReadMode.RightLeftScroll2]:
+            start = max(0, self.curIndex - 1)
             size = config.PreLook
         elif ReadMode.isDouble(self.stripModel):
+            start = self.curIndex
             size = 2
         else:
+            start = self.curIndex
             size = 1
 
-        for index in range(self.curIndex, self.curIndex + size):
+        for index in range(start, self.curIndex + size):
             self.ShowImg(index)
         self.CheckSetProcess()
         self.CheckSetWaifu2xProcess()
@@ -589,9 +601,12 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
     def ShowImg(self, index):
         if index >= self.maxPic:
             return
+        if index < 0:
+            return
         isCurIndex = index == self.curIndex
         p = self.pictureData.get(index)
-        if not p or (not p.data) or (not p.cacheImage):
+        IsHaveWaifu2xData = (not not p and p.isWaifu2x and p.cacheWaifu2xImage)
+        if not IsHaveWaifu2xData and (not p or (not p.data) or (not p.cacheImage)):
             self.scrollArea.SetPixIem(index, None)
             if isCurIndex:
                 if not p or (not p.data):
@@ -599,13 +614,13 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
                 else:
                     self.qtTool.SetData(state=QtFileData.Converting)
 
-                # self.qtTool.modelBox.setEnabled(False)
+                # self.qtTool.modelNameButton.setEnabled(False)
                 # self.frame.process.show()
             return
         # if isCurIndex:
-        #     # self.frame.process.hide()
-        #     if config.CanWaifu2x:
-        #         self.qtTool.modelBox.setEnabled(True)
+            # self.frame.process.hide()
+            # if config.CanWaifu2x:
+            #     self.qtTool.modelNameButton.setEnabled(True)
 
         assert isinstance(p, QtFileData)
         waifu2x = False
@@ -669,7 +684,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
             else:
                 self.frame.process.hide()
 
-        elif self.stripModel not in [ReadMode.RightLeftDouble, ReadMode.RightLeftDouble2, ReadMode.RightLeftDoubleAlone]:
+        elif self.stripModel not in [ReadMode.RightLeftDouble, ReadMode.RightLeftDouble2]:
             index = self.curIndex
             p = self.pictureData.get(index)
             if not p or (not p.data):
@@ -716,7 +731,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
                 self.frame.waifu2xProcess.show()
             else:
                 self.frame.waifu2xProcess.hide()
-        elif self.stripModel not in [ReadMode.RightLeftDouble, ReadMode.RightLeftDouble2, ReadMode.RightLeftDoubleAlone]:
+        elif self.stripModel not in [ReadMode.RightLeftDouble, ReadMode.RightLeftDouble2]:
             index = self.curIndex
             p = self.pictureData.get(index)
             if not p:
@@ -804,7 +819,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
             self.frame.waifu2xProcess.hide()
             # self.ShowImg()
         elif self.stripModel in [ReadMode.UpDown, ReadMode.RightLeftScroll,
-                                 ReadMode.LeftRightScroll] and self._IsPrefetchIndex(index):
+                                 ReadMode.LeftRightScroll, ReadMode.RightLeftScroll2] and self._IsPrefetchIndex(index):
             # self.ShowOtherPage()
             self.CheckLoadPicture()
         else:
@@ -822,7 +837,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         if index == self.curIndex:
             self.ShowImg(index)
         elif self.stripModel in [ReadMode.UpDown, ReadMode.RightLeftScroll,
-                                 ReadMode.LeftRightScroll] and self._IsPrefetchIndex(index):
+                                 ReadMode.LeftRightScroll, ReadMode.RightLeftScroll2] and self._IsPrefetchIndex(index):
             self.ShowImg(index)
         elif ReadMode.isDouble(self.stripModel) and self.curIndex < index <= self.curIndex + 1:
             self.ShowImg(index)
@@ -889,7 +904,9 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
         self.CheckSetProcess()
 
     def _IsPrefetchIndex(self, index):
-        if not self.curIndex < index < self.maxPic:
+        # 滚动模式显示前一页，更流畅
+        start = max(0, self.curIndex - 1)
+        if not start < index < self.maxPic:
             return False
         if Setting.PrefetchWholeChapter.value:
             return True

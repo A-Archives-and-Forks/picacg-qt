@@ -438,6 +438,7 @@ class DownloadBookReq(ServerReq):
         if "/static/tobeimg" in url and  host in jumpDomain :
             url = url.replace(host, jumpDomain[host])
             url = url.replace("/static/tobeimg", "")
+            Log.Info("jump_301_url, {}->{}".format(oldUrl, url))
             allDomain = ["img.picacomic.com", "img.diwodiwo.xyz", "img.tipatipa.xyz"]
         else:
             allDomain = ["storage-b.picacomic.com", "s3.picacomic.com", "storage1.diwodiwo.xyz", "storage.tipatipa.xyz"]
@@ -933,11 +934,11 @@ class GetIdByShareIdReq(ServerReq):
 
 class GetRecommendByIdReq(ServerReq):
     def __init__(self, bookId):
-        url = "https://recommend.go2778.com/pic/recommend/get/?c={}".format(bookId)
+        url = "https://macapi1.com/picacomic/rec/{}?limit=10".format(bookId)
         method = "Get"
         self.bookId = bookId
         super(self.__class__, self).__init__(url, ToolUtil.GetHeader(url, method),
-                                             {}, method)
+                                             {}, method, isOtherCloudFlare=True)
         self.isParseRes = False
 
 
@@ -949,7 +950,7 @@ class GetCfDnsReq(ServerReq):
         method = "Get"
         self.domain = domain
         super(self.__class__, self).__init__(url, ToolUtil.GetHeader(url, method),
-                                             {}, method)
+                                             {}, method, isOtherCloudFlare=True)
 
 
 # Doh域名解析
@@ -960,6 +961,7 @@ class DnsOverHttpsReq(ServerReq):
         header = dict()
         header["accept"] = "application/dns-json"
         header["Content-Type"] = "application/dns-json"
+        header["version"] = config.RealVersion
         super(self.__class__, self).__init__(url, {}, {}, method)
         self.timeout = 5
         self.headers = header
@@ -1045,7 +1047,8 @@ class GetEchConfigReq(ServerReq):
         super(self.__class__, self).__init__(url, {}, {}, method)
         headers = {
                     "Accept": "application/dns-message",
-                   "Content-Type": "application/dns-message"
+                    "Content-Type": "application/dns-message",
+                    "version": config.RealVersion
         }
         self.timeout = 5
         self.params = self.build_dns_query(domain, GetEchConfigReq.TYPE_HTTPS)
@@ -1092,9 +1095,9 @@ class GetProxyIpInfoReq(ServerReq):
         if country:
             url = f"https://check.proxyip.cmliussss.net/resolve?proxyip=proxyip.{country}.cmliussss.net"
         else:
-            url = f"https://check.proxyip.cmliussss.net/resolve?proxyip=proxyip.proxyip.cmliussss.net"
+            url = f"https://check.proxyip.cmliussss.net/resolve?proxyip=proxyip.cmliussss.net"
         method = "GET"
         super(self.__class__, self).__init__(url, {}, {}, method, isOtherCloudFlare=True)
-        self.timeout = 5
+        self.timeout = 7
         self.headers = {}
         self.isParseRes = False

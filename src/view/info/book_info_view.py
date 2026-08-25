@@ -317,7 +317,7 @@ class BookInfoView(QtWidgets.QWidget, Ui_BookInfo, QtTaskBase):
                 self.shareIdLabel.setText("pica"+str(info.shareId))
             else:
                 self.shareIdLabel.setText("")
-                self.AddHttpTask(req.GetShareIdReq(self.bookId), self.GetShareIdBack)
+                # self.AddHttpTask(req.GetShareIdReq(self.bookId), self.GetShareIdBack)
             self.bookName = info.title
             self.description.setPlainText(info.description)
 

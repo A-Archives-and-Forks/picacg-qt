@@ -9,6 +9,8 @@ from component.widget.comic_item_widget import ComicItemWidget
 from config import config
 from config.setting import Setting
 from qt_owner import QtOwner
+from server.sql_server import DbBook
+from tools.book import Book
 from tools.status import Status
 from tools.str import Str
 from tools.tool import ToolUtil

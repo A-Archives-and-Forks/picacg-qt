@@ -261,7 +261,7 @@ class QtOwner(Singleton):
         self.owner.SwitchWidget(self.owner.searchView2, **arg)
 
     def OpenRecomment2(self, bookId):
-        Title = "本子妹推荐"
+        Title = "猜你喜欢"
         arg = {"recoment": 2, "bookId": bookId}
         self.owner.searchView2.setWindowTitle(Title)
         self.owner.searchView2.searchTab.setText(Title)

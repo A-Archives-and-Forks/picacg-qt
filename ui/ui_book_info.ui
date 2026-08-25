@@ -54,7 +54,7 @@ QScrollArea {background-color:transparent;}</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-60</y>
+        <y>-134</y>
         <width>855</width>
         <height>876</height>
        </rect>
@@ -427,7 +427,7 @@ QPushButton:hover
                <item>
                 <widget class="QCommandLinkButton" name="commandLinkButton2">
                  <property name="text">
-                  <string>本子妹推荐</string>
+                  <string>猜你喜欢</string>
                  </property>
                 </widget>
                </item>
@@ -928,7 +928,7 @@ QListWidget::item {
  </customwidgets>
  <resources>
   <include location="../res/images.qrc"/>
-  <include location="../../comic-new/res/images.qrc"/>
+  <include location="../res/images.qrc"/>
  </resources>
  <connections>
   <connection>

@@ -7,7 +7,7 @@ from functools import partial
 from PySide6 import QtWidgets
 from PySide6.QtCore import QSettings, Qt, QSize, QUrl, QFile, QTranslator, QLocale, QEvent
 from PySide6.QtGui import QDesktopServices, QFont, QFontDatabase
-from PySide6.QtWidgets import QFileDialog, QScroller, QScrollerProperties
+from PySide6.QtWidgets import QFileDialog, QScroller, QScrollerProperties, QToolTip
 
 from config import config
 from config.setting import Setting, SettingValue
@@ -98,6 +98,7 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         self.lookMaxBox.valueChanged.connect(partial(self.SpinBoxEvent, Setting.LookMaxNum))
         self.coverMaxBox.valueChanged.connect(partial(self.SpinBoxEvent, Setting.CoverMaxNum))
         self.prefetchCount.valueChanged.connect(partial(self.SpinBoxEvent, Setting.PicturePrefetchCount))
+        self.prefetchFrontCount.valueChanged.connect(partial(self.SpinBoxEvent, Setting.PicturePrefetchFrontCount))
 
         self.generalButton.clicked.connect(partial(self.MoveToLabel, self.generalLabel))
         self.prefetchButton.clicked.connect(partial(self.MoveToLabel, self.prefetchLabel))
@@ -282,6 +283,7 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         # self.titleBox.setChecked(Setting.IsUseTitleBar.value)
         self.openglBox.setChecked(Setting.IsOpenOpenGL.value)
         self.prefetchCount.setValue(Setting.PicturePrefetchCount.value)
+        self.prefetchFrontCount.setValue(Setting.PicturePrefetchFrontCount.value)
         self.crossChapterPrefetch.setChecked(Setting.CrossChapterPrefetch.value)
         self.prefetchWholeChapter.setChecked(Setting.PrefetchWholeChapter.value)
         self.grabGestureBox.setChecked(Setting.IsGrabGesture.value)
