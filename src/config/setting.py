@@ -279,6 +279,12 @@ class Setting:
         return Setting._xdgDir("XDG_DATA_HOME", ".local/share")
 
     @staticmethod
+    def GetDBPath():
+        if sys.platform != "linux":
+            return "db"
+        return Setting._xdgDir("XDG_DATA_HOME", ".local/share")
+
+    @staticmethod
     def GetCachePath():
         if sys.platform == "win32":
             return os.path.join(Setting.SavePath.value, config.CachePathDir)

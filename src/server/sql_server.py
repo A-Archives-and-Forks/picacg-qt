@@ -9,6 +9,7 @@ from queue import Queue
 # 一本书
 from config import config
 from config.setting import Setting
+from qt_owner import QtOwner
 from task.task_sql import TaskSql
 from tools.book import BookMgr
 from tools.langconv import Converter
@@ -17,6 +18,7 @@ from tools.singleton import Singleton
 from tools.status import Status
 from tools.tool import time_me
 from tools.user import User
+from qt_owner import QtOwner
 
 
 class DbBook(object):
@@ -50,7 +52,7 @@ class DbBook(object):
 
 class SqlServer(Singleton):
     DbInfos = dict()
-    DbInfos["book"] = "db/book.db"
+    DbInfos["book"] = "book.db"
 
     TaskCheck = 0
     TaskTypeSql = 1
@@ -94,15 +96,16 @@ class SqlServer(Singleton):
         isInit = True
         conn = None
         try:
-            if sys.platform == "linux":
-                path = os.path.join(Setting.GetDataPath(), bookPath)
-                conn = sqlite3.connect(path, timeout=5)
+            path = os.path.join(Setting.GetDBPath(), bookPath)
+            if not os.path.isfile(path):
+                QtOwner().isUseDb = False
+                isInit = False
             else:
-                conn = sqlite3.connect(bookPath, timeout=5)
-            conn.execute("PRAGMA journal_mode=WAL")
+                conn = sqlite3.connect(path, timeout=5)
+                conn.execute("PRAGMA journal_mode=WAL")
+                self.__DoCheckHavePicaID(conn)
         except Exception as es:
             Log.Error(es)
-            from qt_owner import QtOwner
             QtOwner().isUseDb = False
             isInit = False
 
@@ -164,6 +167,18 @@ class SqlServer(Singleton):
         Log.Info("db: close conn:{}".format(bookName))
         return
 
+    def __DoCheckHavePicaID(self, conn):
+        cur = conn.cursor()
+        sql = "PRAGMA table_info(book);"
+        allName = []
+        cur.execute(sql)
+        for data in cur.fetchall():
+            allName.append(data[1])
+        if "shareId" in allName:
+            QtOwner().isDbHavePicaID = True
+        else:
+            QtOwner().isDbHavePicaID = False
+
     def _SelectBook(self, conn, sql, backId):
         cur = conn.cursor()
         cur.execute(sql)
@@ -189,7 +204,8 @@ class SqlServer(Singleton):
             info.creator = data[16]
             info.totalLikes = data[17]
             info.totalViews = data[18]
-            info.shareId = data[19]
+            if QtOwner().isDbHavePicaID:
+                info.shareId = data[19]
             books.append(info)
         data = pickle.dumps(books)
         if backId:
@@ -263,15 +279,16 @@ class SqlServer(Singleton):
         try:
             cur = conn.cursor()
             if isinstance(bookId, int):
-                cur.execute(
-                    "select id, title, title2, author, chineseTeam, description, epsCount, pages, finished, likesCount, categories, tags," \
+                sql = "select id, title, title2, author, chineseTeam, description, epsCount, pages, finished, likesCount, categories, tags," \
                     "created_at, updated_at, path, fileServer, creator, totalLikes, totalViews, shareId from book where shareId ='{}'".format(
-                        bookId))
+                        bookId)
             else:
-                cur.execute(
-                    "select id, title, title2, author, chineseTeam, description, epsCount, pages, finished, likesCount, categories, tags," \
-                    "created_at, updated_at, path, fileServer, creator, totalLikes, totalViews, shareId from book where id ='{}'".format(
-                        bookId))
+                sql = "select id, title, title2, author, chineseTeam, description, epsCount, pages, finished, likesCount, categories, tags," \
+                "created_at, updated_at, path, fileServer, creator, totalLikes, totalViews, shareId from book where id ='{}'".format(
+                    bookId)
+            if not QtOwner().isDbHavePicaID:
+                sql = sql.replace(", shareId", "")
+            cur.execute(sql)
             allFavoriteIds = []
             for data in cur.fetchall():
                 info = DbBook()
@@ -294,7 +311,8 @@ class SqlServer(Singleton):
                 info.creator = data[16]
                 info.totalLikes = data[17]
                 info.totalViews = data[18]
-                info.shareId = data[19]
+                if QtOwner().isDbHavePicaID:
+                    info.shareId = data[19]
                 BookMgr().AddBookByDb(info)
                 allFavoriteIds.append(info)
             v["bookList"] = allFavoriteIds
@@ -319,13 +337,24 @@ class SqlServer(Singleton):
             for book in addData:
                 if not book:
                     continue
-                sql = "replace INTO book(id, title, title2, author, chineseTeam, description, epsCount, pages, finished, likesCount, categories, tags," \
-                      "created_at, updated_at, path, fileServer, creator, totalLikes, totalViews, shareId) " \
-                      "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, {7}, {8}, {9}, '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', {17}, {18}, {19}); " \
-                    .format(book.id, book.title, book.title2, book.author, book.chineseTeam, book.description,
-                            book.epsCount, book.pages, int(book.finished), book.likesCount,
-                            book.categories, book.tags, book.created_at, book.updated_at, book.path, book.fileServer,
-                            book.creator, book.totalLikes, book.totalViews, book.shareId)
+                if QtOwner().isDbHavePicaID and book.shareId > 0:
+                    sql = "replace INTO book(id, title, title2, author, chineseTeam, description, epsCount, pages, finished, likesCount, categories, tags," \
+                          "created_at, updated_at, path, fileServer, creator, totalLikes, totalViews, shareId) " \
+                          "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, {7}, {8}, {9}, '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', {17}, {18}, {19}); " \
+                        .format(book.id, book.title, book.title2, book.author, book.chineseTeam, book.description,
+                                book.epsCount, book.pages, int(book.finished), book.likesCount,
+                                book.categories, book.tags, book.created_at, book.updated_at, book.path, book.fileServer,
+                                book.creator, book.totalLikes, book.totalViews, book.shareId)
+                else:
+                    sql = "replace INTO book(id, title, title2, author, chineseTeam, description, epsCount, pages, finished, likesCount, categories, tags," \
+                          "created_at, updated_at, path, fileServer, creator, totalLikes, totalViews) " \
+                          "VALUES ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', {6}, {7}, {8}, {9}, '{10}', '{11}', '{12}', '{13}', '{14}', '{15}', '{16}', {17}, {18}); " \
+                        .format(book.id, book.title, book.title2, book.author, book.chineseTeam, book.description,
+                                book.epsCount, book.pages, int(book.finished), book.likesCount,
+                                book.categories, book.tags, book.created_at, book.updated_at, book.path,
+                                book.fileServer,
+                                book.creator, book.totalLikes, book.totalViews)
+
                 sql = sql.replace("\0", "")
                 cur.execute(sql)
 
@@ -356,10 +385,14 @@ class SqlServer(Singleton):
             sql = "select book.id, title, title2, author, chineseTeam, description, epsCount, pages, finished, likesCount, categories, tags," \
                   "created_at, updated_at, path, fileServer, creator, totalLikes, totalViews, shareId from book, favorite  where book.id = favorite.id and favorite.user='{}' ".format(
                 Setting.UserId.value)
+            if not QtOwner().isDbHavePicaID:
+                sql = sql.replace(", share_id", "")
         else:
             sql = "select book.id, title, title2, author, chineseTeam, description, epsCount, pages, finished, likesCount, categories, tags," \
                   "created_at, updated_at, path, fileServer, creator, totalLikes, totalViews, shareId from book, favorite  where book.id = favorite.id and favorite.user='{}' ".format(
                 Setting.UserId.value)
+            if not QtOwner().isDbHavePicaID:
+                sql = sql.replace(", share_id", "")
             sql += " and (book.title like '%{}%' or ".format(Converter('zh-hans').convert(searchText).replace("'", "''"))
             sql += " book.title2 like '%{}%' or ".format(Converter('zh-hans').convert(searchText).replace("'", "''"))
             sql += " book.author like '%{}%' or ".format(Converter('zh-hans').convert(searchText).replace("'", "''"))
@@ -440,6 +473,8 @@ class SqlServer(Singleton):
         else:
             sql = "SELECT id, title, title2, author, chineseTeam, description, epsCount, pages, finished, likesCount, categories, tags," \
               "created_at, updated_at, path, fileServer, creator, totalLikes, totalViews, shareId FROM book WHERE 1 "
+        if not QtOwner().isDbHavePicaID:
+            sql = sql.replace(", share_id", "")
 
         if sql2Data:
             sql2Data = "SELECT id FROM book WHERE 0 {}".format(sql2Data)
@@ -503,6 +538,8 @@ class SqlServer(Singleton):
         sql = "SELECT id, title, title2, author, chineseTeam, description, epsCount, pages, finished, likesCount, categories, tags," \
               "created_at, updated_at, path, fileServer, creator, totalLikes, totalViews, shareId FROM book WHERE {}".format(
             where)
+        if not QtOwner().isDbHavePicaID:
+            sql = sql.replace(", shareId", "")
         return sql
 
     @staticmethod
@@ -569,6 +606,8 @@ class SqlServer(Singleton):
         else:
             sql = "SELECT id, title, title2, author, chineseTeam, description, epsCount, pages, finished, likesCount, categories, tags," \
               "created_at, updated_at, path, fileServer, creator, totalLikes, totalViews, shareId FROM book WHERE 1 "
+        if not QtOwner().isDbHavePicaID:
+            sql = sql.replace(", share_id", "")
         if isFinish:
             sql += " and finished=1 "
 
@@ -604,7 +643,7 @@ class SqlServer(Singleton):
 
     @staticmethod
     def SaveCacheWord():
-        path = os.path.join(Setting.GetConfigPath() if sys.platform == "win32" else Setting.GetCachePath(), "cache_word")
+        path = os.path.join(Setting.GetStatePath(), "cache_word")
         try:
             if not SqlServer().cacheWord:
                 return
@@ -616,7 +655,7 @@ class SqlServer(Singleton):
 
     @staticmethod
     def LoadCacheWord():
-        path = os.path.join(Setting.GetConfigPath() if sys.platform == "win32" else Setting.GetCachePath(), "cache_word")
+        path = os.path.join(Setting.GetStatePath(), "cache_word")
         try:
             if not os.path.isfile(path):
                 return

@@ -142,7 +142,7 @@ class ServerReq(object):
         if not self.resetUrl:
             return False
         if self.resetIndex >= len(self.resetUrl):
-            self.resetIndex = 0
+            return False
         url = self.resetUrl[self.resetIndex]
         self.resetIndex += 1
         if self.proxyUrl:
@@ -162,6 +162,8 @@ class ServerReq(object):
         headers = dict()
         headers.update(self.headers)
         params = self.params
+        if isinstance(self, (LoginReq, RegisterReq, ForgotPasswordReq, ResetPasswordReq)):
+            params = {}
         return "{}, ech:{}, url:{}, ip:{}, proxy:{}, method:{}, headers:{}, params:{}, proxy:{}".format(self.__class__.__name__, ech, self.url, self.ipList, self.proxy, self.method, headers, params, self.proxy)
 
     def __str__(self):
@@ -435,7 +437,8 @@ class DownloadBookReq(ServerReq):
         }
         # 封面会出现301跳转，可以提前设置好域名
         host = ToolUtil.GetUrlHost(url)
-        if "/static/tobeimg" in url and  host in jumpDomain :
+        isJump = "/static/tobeimg" in url and  host in jumpDomain
+        if isJump:
             url = url.replace(host, jumpDomain[host])
             url = url.replace("/static/tobeimg", "")
             Log.Info("jump_301_url, {}->{}".format(oldUrl, url))
@@ -460,8 +463,9 @@ class DownloadBookReq(ServerReq):
         realHost = ToolUtil.GetUrlHost(url)
         if realHost in allDomain:
             allDomain.remove(realHost)
+        random.shuffle(allDomain)
         self.resetUrl = [self.url.replace(realHost, i) for i in allDomain]
-        self.resetCnt = max(resetCnt, len(self.resetUrl))
+        self.resetCnt = max(resetCnt, len(self.resetUrl)//2)
 
 
 # 获得评论
@@ -646,7 +650,6 @@ class SpeedTestReq(ServerReq):
         method = "Download"
         host = ToolUtil.GetUrlHost(url)
         if host in config.ApiDomain and Setting.ProxySelectIndex.value == 5:
-            self.headers.pop("user-agent")
             self.proxyUrl = GlobalConfig.ProxyApiDomain.value
 
         header = ToolUtil.GetHeader(url, method)
@@ -1093,11 +1096,14 @@ class GetIpInfoReq(ServerReq):
 class GetProxyIpInfoReq(ServerReq):
     def __init__(self, country=""):
         if country:
-            url = f"https://check.proxyip.cmliussss.net/resolve?proxyip=proxyip.{country}.cmliussss.net"
+            url = f"https://check.jpacg.cc/resolve?proxyip=proxyip.{country}.cmliussss.net"
         else:
-            url = f"https://check.proxyip.cmliussss.net/resolve?proxyip=proxyip.cmliussss.net"
+            url = f"https://check.jpacg.cc/resolve?proxyip=proxyip.cmliussss.net"
         method = "GET"
         super(self.__class__, self).__init__(url, {}, {}, method, isOtherCloudFlare=True)
         self.timeout = 7
         self.headers = {}
         self.isParseRes = False
+        realUrl = ToolUtil.GetUrlHost(url)
+        self.resetUrl = [url.replace(realUrl, "proxyip.jpacg.cc")]
+        self.resetCnt = len(self.resetUrl)

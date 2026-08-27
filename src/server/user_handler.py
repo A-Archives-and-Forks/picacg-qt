@@ -6,6 +6,8 @@ import time
 from contextlib import closing
 from datetime import timedelta
 
+from curl_cffi.requests import exceptions
+
 from config import config
 from task.qt_task import TaskBase
 from tools.log import Log
@@ -229,6 +231,7 @@ class SpeedTestPingHandler(object):
 @handler(req.DownloadBookReq)
 class DownloadBookHandler(object):
     def __call__(self, backData):
+        task = backData
         if backData.status != Status.Ok:
             if backData.backParam:
                 TaskBase.taskObj.downloadBack.emit(backData.backParam, -backData.status, b"")
@@ -242,17 +245,15 @@ class DownloadBookHandler(object):
             index = backData.index
             cfHit = False
             isFail = False
+            getSize = 0
+            data = b""
             try:
                 try:
-                    with closing(requests2.get(request.url, headers=request.headers, timeout=backData.timeout,
+                    with closing(requests2.get(request.url, headers=request.headers, timeout=backData.timeout, impersonate="chrome110",
                                                proxies=request.proxy, curl_options=request.curl_opt, stream=True)) as r:
 
                         fileSize = int(r.headers.get('Content-Length', 0))
                         cfHit = r.headers.get("cf-cache-status", False)
-
-                        getSize = 0
-                        data = b""
-
                         now = time.time()
                         isAlreadySend = False
                         isSpacePic = False
@@ -288,13 +289,50 @@ class DownloadBookHandler(object):
                             if backData.backParam:
                                 TaskBase.taskObj.downloadBack.emit(backData.backParam, getSize, b"")
 
-                except Exception as es:
-                    Log.Error(es)
+                except exceptions.DNSError as es:
+                    task.status = Status.DnsError
                     isFail = True
-                    if backData.req.resetCnt >= 0:
-                        backData.req.isReset = True
-                        Server().ReDownload(backData)
-                        return
+                    Log.Error(es)
+                except exceptions.Timeout as es:
+                    if "Connection was reset" in str(es):
+                        task.status = Status.ResetErr
+                    elif "ECH_REJECTED" in str(es):
+                        task.status = Status.EchError
+                    elif "TLSV1_ALERT_UNRECOGNIZED_NAME" in str(es):
+                        task.status = Status.SNIError
+                    else:
+                        task.status = Status.TimeOut
+                    isFail = True
+                    Log.Error(es)
+                except exceptions.SSLError as es:
+                    if "Connection was reset" in str(es):
+                        task.status = Status.ResetErr
+                    elif "ECH_REJECTED" in str(es):
+                        task.status = Status.EchError
+                    elif "TLSV1_ALERT_UNRECOGNIZED_NAME" in str(es):
+                        task.status = Status.SNIError
+                    else:
+                        task.status = Status.NetError
+                    isFail = True
+                    Log.Error(es)
+                except exceptions.ConnectionError as es:
+                    isFail = True
+                    task.status = Status.ConnectErr
+                    Log.Error(es)
+                except exceptions.RequestException as es:
+                    if "timed out" in str(es):
+                        task.status = Status.TimeOut
+                    else:
+                        task.status = Status.ConnectErr
+                    isFail = True
+                    Log.Error(es)
+                except Exception as es:
+                    isFail = True
+                    backData.status = Status.NetError
+                    Log.Error(es)
+                except:
+                    isFail = True
+                    Log.Warn(f"error:{backData.req.GetPri()}")
 
                 # 异常图片
                 if isFail:
@@ -304,7 +342,6 @@ class DownloadBookHandler(object):
                         Server().ReDownload(backData)
                         return
                     else:
-                        backData.status = Status.DownloadBusy
                         if backData.bakParam:
                             TaskBase.taskObj.downloadBack.emit(backData.backParam, -backData.status, b"")
                         return
@@ -597,7 +634,7 @@ class SpeedTestHandler(object):
             request = backData.req
             index = backData.index
             try:
-                r = requests2.get(request.url, headers=request.headers,timeout=backData.timeout,
+                r = requests2.get(request.url, headers=request.headers,timeout=backData.timeout, impersonate="chrome110",
                                proxies=request.proxy, curl_options=request.curl_opt, stream=True)
 
                 fileSize = int(r.headers.get('Content-Length', 0))
