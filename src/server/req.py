@@ -53,12 +53,17 @@ class ServerReq(object):
         if host in GlobalConfig.AllImgDomain.value:
             self.isImg = True
             self.timeout = Setting.ImgTimeOut.GetIndexV()
-        if self.isApi or self.isImg:
+        if self.isApi:
+            ## 图片不设置该值，否则cf-cache-status返回BYPASS
             from tools.user import User
             self.headers["authorization"] = User().token
+
         self.SetIndex(Setting.ProxySelectIndex.value, Setting.ProxyImgSelectIndex.value)
         self.SetProxy(Setting.IsHttpProxy.value, Setting.HttpProxy.value, Setting.Sock5Proxy.value)
         from qt_owner import QtOwner
+        if (self.isApi or self.isImg) and self.proxyUrl:
+            self.headers['version'] = config.UpdateVersion
+
         if self.isApi and not self.proxyUrl:
             self.ipList = GlobalConfig.GetAddress(Setting.ProxySelectIndex.value)
         elif self.isImg and not self.proxyUrl:
@@ -457,7 +462,7 @@ class DownloadBookReq(ServerReq):
         self.savePath = savePath
         self.isReset = False
         self.url = url
-        super(self.__class__, self).__init__(url, ToolUtil.GetHeader(url, method),
+        super(self.__class__, self).__init__(url, ToolUtil.GetDownImgHeader(),
                                              {}, method)
         self.isReload = isReload
         realHost = ToolUtil.GetUrlHost(url)
@@ -652,7 +657,7 @@ class SpeedTestReq(ServerReq):
         if host in config.ApiDomain and Setting.ProxySelectIndex.value == 5:
             self.proxyUrl = GlobalConfig.ProxyApiDomain.value
 
-        header = ToolUtil.GetHeader(url, method)
+        header = ToolUtil.GetDownImgHeader()
         header['cache-control'] = 'no-cache'
         header['expires'] = '0'
         header['pragma'] = 'no-cache'
@@ -1067,11 +1072,10 @@ class SpeedTestPing2Req(ServerReq):
         # url = url + "/cdn-cgi/trace"
         url = url + "/static/3142c39a-02aa-45db-a082-b4d9c9b4c251.jpg"
         method = "GET"
-        super(self.__class__, self).__init__(url, {}, {}, method)
+        super(self.__class__, self).__init__(url, ToolUtil.GetDownImgHeader(), {}, method)
         self.headers['cache-control'] = 'no-cache'
         self.headers['expires'] = '0'
         self.headers['pragma'] = 'no-cache'
-        self.headers["authorization"] = ""
         self.isReload = False
         self.isParseRes = False
         self.timeout = 3

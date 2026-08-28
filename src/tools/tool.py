@@ -86,11 +86,17 @@ class ToolUtil(object):
             "app-platform": config.Platform,
             "app-build-version": config.BuildVersion,
             "user-agent": config.Agent,
-            "version": config.UpdateVersion,
         }
         if method.lower() in ["post", "put"]:
             header["Content-Type"] = "application/json; charset=UTF-8"
 
+        return header
+
+    @staticmethod
+    def GetDownImgHeader():
+        header = {
+            # "user-agent": config.Agent,
+        }
         return header
 
     @staticmethod

@@ -199,6 +199,8 @@ class ReadTool(QtWidgets.QWidget, Ui_ReadImg):
                     return
                 self.OpenNextEps()
             else:
+                if not bookInfo:
+                    return
                 if epsId + 1 < bookInfo.epsCount:
                     QtOwner().ShowMsg(Str.GetStr(Str.AutoSkipNext))
                     self.OpenNextEps()
@@ -381,6 +383,8 @@ class ReadTool(QtWidgets.QWidget, Ui_ReadImg):
                 QtOwner().ShowMsg(Str.GetStr(Str.NotDownload))
                 return
         else:
+            if not bookInfo:
+                return
             if lasEps >= bookInfo.epsCount:
                 return
 
@@ -409,6 +413,8 @@ class ReadTool(QtWidgets.QWidget, Ui_ReadImg):
                 QtOwner().ShowMsg(Str.GetStr(Str.NotDownload))
                 return
         else:
+            if not bookInfo:
+                return
             if nextEps >= bookInfo.epsCount:
                 QtOwner().ShowMsg(Str.GetStr(Str.AlreadyNextChapter))
                 return

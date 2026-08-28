@@ -185,19 +185,23 @@ class FavoriteView(QtWidgets.QWidget, Ui_Favorite, QtTaskBase):
     def SearchBack(self, raw, page):
         QtOwner().CloseLoading()
         try:
-            data = raw["data"]
-            data = json.loads(data)
-            info = data.get("data", {}).get("comics", {})
-            total = info["total"]
-            page = info["page"]
-            pages = info["pages"]
-            self.bookList.UpdateState()
-            self.bookList.UpdatePage(page, pages)
-            self.spinBox.setMaximum(pages)
-            self.nums.setText(Str.GetStr(Str.FavoriteNum) + ": {}".format(total))
-            for bookInfo in info.get("docs", []):
-                bookId = bookInfo.get("_id")
-                self.bookList.AddBookByDict(bookInfo)
+            st = raw.get("st")
+            if st == Str.Ok:
+                data = raw["data"]
+                data = json.loads(data)
+                info = data.get("data", {}).get("comics", {})
+                total = info["total"]
+                page = info["page"]
+                pages = info["pages"]
+                self.bookList.UpdateState()
+                self.bookList.UpdatePage(page, pages)
+                self.spinBox.setMaximum(pages)
+                self.nums.setText(Str.GetStr(Str.FavoriteNum) + ": {}".format(total))
+                for bookInfo in info.get("docs", []):
+                    bookId = bookInfo.get("_id")
+                    self.bookList.AddBookByDict(bookInfo)
+            else:
+                QtOwner().ShowError(Str.GetStr(st))
         except Exception as es:
             Log.Error(es)
 

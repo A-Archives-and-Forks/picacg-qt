@@ -139,6 +139,9 @@ class SearchView(QWidget, Ui_Search, QtTaskBase):
             self.lineEdit.AddCacheWord(text)
             return
 
+        if not QtOwner().isUseDb:
+            self.isLocal = False
+
         isRecomend =  kwargs.get("recoment")
         if isRecomend == 1:
             self.bookList.clear()
@@ -186,6 +189,8 @@ class SearchView(QWidget, Ui_Search, QtTaskBase):
 
             if isLocal is not None:
                 self.isLocal = isLocal
+            if not QtOwner().isUseDb:
+                self.isLocal = False
             self.SetEnable(self.isLocal)
             self.isTitle = kwargs.get("isTitle")
             self.isDes = kwargs.get("isDes")
@@ -261,7 +266,7 @@ class SearchView(QWidget, Ui_Search, QtTaskBase):
     def SendSearchCategories(self, page):
         sort = ["dd", "da", "ld", "vd"]
         QtOwner().ShowLoading()
-        if self.categories in CateGoryMgr().allCategorise:
+        if QtOwner().isUseDb and self.categories in CateGoryMgr().allCategorise:
             categorys = self.GetSelectCategory()
             if len(categorys) > 0:
                 self.categoryNum.setText("已选择{}个分类".format(len(categorys)))
