@@ -162,13 +162,14 @@ class HelpView(QWidget, Ui_Help, QtTaskBase):
         self.AddSqlTask("book", "", SqlServer.TaskCheck, self.CheckDbBack)
 
     def CheckDbBack(self, data):
+        from qt_owner import QtOwner
         if not data:
             Log.Error("Not found book.db !!!!!!!!!!!!!!!")
-            from qt_owner import QtOwner
             QtOwner().SetDbError()
             QtOwner().ShowErrOne("无法加载本地数据库db/book.db")
             return
         self.isHaveDb = True
+        QtOwner().canUseDb = True
         self.UpdateDbInfo()
         return
 

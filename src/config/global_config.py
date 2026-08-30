@@ -60,7 +60,11 @@ class GlobalConfig:
         "www.picacomic.com",
         "storage.tipatipa.xyz",
         "pica-pica.wikawika.xyz",
-        "storage1.go2778.com"
+        "storage1.go2778.com",
+        "diwodiwo.xyz",
+        "wikawika.xyz",
+        "tipatipa.xyz",
+        "picacomic.com",
     ])
 
     CdnApiUrl = GlobalItem("https://picaapi.picacomic.com")

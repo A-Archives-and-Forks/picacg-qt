@@ -28,12 +28,13 @@ from component.list.tag_list_widget import TagListWidget
 from component.scroll_area.smooth_scroll_area import SmoothScrollArea
 import images_rc
 import images_rc
+import images_rc
 
 class Ui_BookInfo(object):
     def setupUi(self, BookInfo):
         if not BookInfo.objectName():
             BookInfo.setObjectName(u"BookInfo")
-        BookInfo.resize(892, 719)
+        BookInfo.resize(826, 719)
         BookInfo.setStyleSheet(u"QToolButton\n"
 "{\n"
 "background-color:transparent;\n"
@@ -70,7 +71,7 @@ class Ui_BookInfo(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, -134, 855, 876))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 789, 876))
         self.verticalLayout_3 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.gridLayout_3 = QGridLayout()
@@ -396,14 +397,25 @@ class Ui_BookInfo(object):
 
         self.horizontalLayout_2.addWidget(self.favoriteButton)
 
+        self.localButton = QToolButton(self.tab)
+        self.localButton.setObjectName(u"localButton")
+        self.localButton.setMinimumSize(QSize(40, 40))
+        icon2 = QIcon()
+        icon2.addFile(u":/png/icon/icon_like_off.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.localButton.setIcon(icon2)
+        self.localButton.setIconSize(QSize(50, 50))
+        self.localButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+
+        self.horizontalLayout_2.addWidget(self.localButton)
+
         self.commentButton = IconToolButton(self.tab)
         self.commentButton.setObjectName(u"commentButton")
         self.commentButton.setMinimumSize(QSize(40, 40))
         self.commentButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.commentButton.setStyleSheet(u"background-color:transparent;")
-        icon2 = QIcon()
-        icon2.addFile(u":/png/icon/icon_comment.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.commentButton.setIcon(icon2)
+        icon3 = QIcon()
+        icon3.addFile(u":/png/icon/icon_comment.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.commentButton.setIcon(icon3)
         self.commentButton.setIconSize(QSize(50, 50))
         self.commentButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
@@ -414,9 +426,9 @@ class Ui_BookInfo(object):
         self.downloadButton.setMinimumSize(QSize(40, 40))
         self.downloadButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.downloadButton.setStyleSheet(u"background-color:transparent;")
-        icon3 = QIcon()
-        icon3.addFile(u":/png/icon/ic_get_app_black_36dp.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.downloadButton.setIcon(icon3)
+        icon4 = QIcon()
+        icon4.addFile(u":/png/icon/ic_get_app_black_36dp.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.downloadButton.setIcon(icon4)
         self.downloadButton.setIconSize(QSize(50, 50))
         self.downloadButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
@@ -425,9 +437,9 @@ class Ui_BookInfo(object):
         self.uploadButton = QToolButton(self.tab)
         self.uploadButton.setObjectName(u"uploadButton")
         self.uploadButton.setMinimumSize(QSize(40, 40))
-        icon4 = QIcon()
-        icon4.addFile(u":/png/icon/upload.svg", QSize(), QIcon.Normal, QIcon.Off)
-        self.uploadButton.setIcon(icon4)
+        icon5 = QIcon()
+        icon5.addFile(u":/png/icon/upload.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.uploadButton.setIcon(icon5)
         self.uploadButton.setIconSize(QSize(50, 50))
         self.uploadButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
@@ -436,9 +448,9 @@ class Ui_BookInfo(object):
         self.clearButton = QToolButton(self.tab)
         self.clearButton.setObjectName(u"clearButton")
         self.clearButton.setMinimumSize(QSize(40, 40))
-        icon5 = QIcon()
-        icon5.addFile(u":/png/icon/clear_off.png", QSize(), QIcon.Normal, QIcon.Off)
-        self.clearButton.setIcon(icon5)
+        icon6 = QIcon()
+        icon6.addFile(u":/png/icon/clear_off.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.clearButton.setIcon(icon6)
         self.clearButton.setIconSize(QSize(50, 50))
         self.clearButton.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
@@ -600,6 +612,7 @@ class Ui_BookInfo(object):
         self.updateTick.setText(QCoreApplication.translate("BookInfo", u"TextLabel", None))
         self.starButton.setText(QCoreApplication.translate("BookInfo", u"\u7231\u5fc3", None))
         self.favoriteButton.setText(QCoreApplication.translate("BookInfo", u"\u6536\u85cf", None))
+        self.localButton.setText(QCoreApplication.translate("BookInfo", u"\u672c\u5730", None))
         self.commentButton.setText(QCoreApplication.translate("BookInfo", u"\u8bc4\u8bba", None))
         self.downloadButton.setText(QCoreApplication.translate("BookInfo", u"\u4e0b\u8f7d", None))
         self.uploadButton.setText(QCoreApplication.translate("BookInfo", u"\u5b58\u50a8", None))

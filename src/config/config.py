@@ -46,9 +46,9 @@ DatabaseDownload2 = "https://raw.githubusercontent.com/bika-robot/picacg-databas
 
 Issues1 = "https://github.com/tonquer/picacg-qt/issues"
 
-UpdateVersion = "v1.5.4"
-RealVersion = "v1.5.4"
-TimeVersion = "2026-2-28"
+UpdateVersion = "v1.5.5"
+RealVersion = "v1.5.5"
+TimeVersion = "2026-8-30"
 DbVersion = ""
 
 Waifu2xVersion = "1.2.0"

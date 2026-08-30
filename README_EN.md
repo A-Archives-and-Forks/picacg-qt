@@ -17,8 +17,8 @@
 - Support for viewing and downloading.
 
 ## My other projects
- [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=tonquer&repo=ehentai-windows)](https://github.com/tonquer/ehentai-windows)  
- [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=tonquer&repo=waifu2x-vulkan)](https://github.com/tonquer/waifu2x-vulkan)
+ [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=tonquer&repo=ehentai-windows)](https://github.com/tonquer/ehentai-windows)  
+ [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=tonquer&repo=waifu2x-vulkan)](https://github.com/tonquer/waifu2x-vulkan)
 
 ## How to use
   ### Windows (tested on Win10)
@@ -59,32 +59,26 @@
 ## Interface
 
 * Login
-![Login](example/登录.gif)
 
 * Search
-![Search](example/搜索.gif)
 
 * Comic details
-![Comic details](example/漫画详情.gif)
 
 * Download
-![Download](example/下载.gif)
 
 * Browsing pictures
-![Browsing pictures](example/看图.gif)
 
 * waifu2x
-![waifu2x](example/waifu2x.gif)
 
 ## Thanks for the following projects
   ### waifu2x support
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=nagadomi&repo=waifu2x)](https://github.com/nagadomi/waifu2x)  
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=nihui&repo=waifu2x-ncnn-vulkan)](https://github.com/nagadomi/waifu2x-ncnn-vulkan)  
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=tonquer&repo=waifu2x-vulkan)](https://github.com/tonquer/waifu2x-vulkan)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=nagadomi&repo=waifu2x)](https://github.com/nagadomi/waifu2x)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=nihui&repo=waifu2x-ncnn-vulkan)](https://github.com/nagadomi/waifu2x-ncnn-vulkan)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=tonquer&repo=waifu2x-vulkan)](https://github.com/tonquer/waifu2x-vulkan)  
   ### Qt support
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=PyQt5&repo=PyQt)](https://github.com/PyQt5/PyQt)  
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=PyQt5&repo=PyQtClient)](https://github.com/PyQt5/PyQtClient)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=PyQt5&repo=PyQt)](https://github.com/PyQt5/PyQt)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=PyQt5&repo=PyQtClient)](https://github.com/PyQt5/PyQtClient)  
   ### Qt skin
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=satchelwu&repo=QSS-Skin-Builder)](https://github.com/satchelwu/QSS-Skin-Builder)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=satchelwu&repo=QSS-Skin-Builder)](https://github.com/satchelwu/QSS-Skin-Builder)  
   ### Qt smooth scrolling
-   [![Readme Card](https://github-readme-stats.vercel.app/api/pin/?username=zhiyiYo&repo=Groove)](https://github.com/zhiyiYo/Groove)  
+   [![Readme Card](https://github-readme-stats-fast.vercel.app/api/pin/?username=zhiyiYo&repo=Groove)](https://github.com/zhiyiYo/Groove)  

@@ -426,6 +426,8 @@ class GetComicsRecommendation(ServerReq):
 class DownloadBookReq(ServerReq):
     def __init__(self, url, loadPath="", cachePath="", savePath="", isReload=False, resetCnt=1):
         method = "Download"
+        if "static/static" in url:
+            url = url.replace("static/static", "static/")
         oldUrl = url
         jumpDomain = {
             "storage-b.picacomic.com": "img.picacomic.com",

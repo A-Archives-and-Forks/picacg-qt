@@ -26,19 +26,31 @@ class Ui_LocalFavorite(object):
     def setupUi(self, LocalFavorite):
         if not LocalFavorite.objectName():
             LocalFavorite.setObjectName(u"LocalFavorite")
-        LocalFavorite.resize(628, 334)
+        LocalFavorite.resize(756, 404)
         self.gridLayout_2 = QGridLayout(LocalFavorite)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.gridLayout_3 = QGridLayout()
-        self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.bookList = ComicListWidget(LocalFavorite)
-        self.bookList.setObjectName(u"bookList")
-        self.bookList.setStyleSheet(u"")
+        self.widget = QWidget(LocalFavorite)
+        self.widget.setObjectName(u"widget")
+        self.horizontalLayout_2 = QHBoxLayout(self.widget)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.label = QLabel(self.widget)
+        self.label.setObjectName(u"label")
 
-        self.gridLayout_3.addWidget(self.bookList, 0, 0, 1, 1)
+        self.horizontalLayout_2.addWidget(self.label)
+
+        self.folderBox = QComboBox(self.widget)
+        self.folderBox.setObjectName(u"folderBox")
+        self.folderBox.setMinimumSize(QSize(120, 0))
+
+        self.horizontalLayout_2.addWidget(self.folderBox)
+
+        self.lineEdit = QLineEdit(self.widget)
+        self.lineEdit.setObjectName(u"lineEdit")
+
+        self.horizontalLayout_2.addWidget(self.lineEdit)
 
 
-        self.gridLayout_2.addLayout(self.gridLayout_3, 1, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.widget, 0, 0, 1, 1)
 
         self.gridLayout_4 = QGridLayout()
         self.gridLayout_4.setObjectName(u"gridLayout_4")
@@ -50,6 +62,12 @@ class Ui_LocalFavorite(object):
         self.horizontalLayout.addWidget(self.msgLabel)
 
         self.sortKeyCombox = QComboBox(LocalFavorite)
+        self.sortKeyCombox.addItem("")
+        self.sortKeyCombox.addItem("")
+        self.sortKeyCombox.addItem("")
+        self.sortKeyCombox.addItem("")
+        self.sortKeyCombox.addItem("")
+        self.sortKeyCombox.addItem("")
         self.sortKeyCombox.addItem("")
         self.sortKeyCombox.setObjectName(u"sortKeyCombox")
         self.sortKeyCombox.setEnabled(True)
@@ -68,6 +86,16 @@ class Ui_LocalFavorite(object):
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
+
+        self.importButton = QPushButton(LocalFavorite)
+        self.importButton.setObjectName(u"importButton")
+
+        self.horizontalLayout.addWidget(self.importButton)
+
+        self.tipText = QLabel(LocalFavorite)
+        self.tipText.setObjectName(u"tipText")
+
+        self.horizontalLayout.addWidget(self.tipText)
 
         self.line_2 = QFrame(LocalFavorite)
         self.line_2.setObjectName(u"line_2")
@@ -126,24 +154,23 @@ class Ui_LocalFavorite(object):
         self.gridLayout_4.addLayout(self.horizontalLayout, 0, 0, 1, 1)
 
 
-        self.gridLayout_2.addLayout(self.gridLayout_4, 2, 0, 1, 1)
+        self.gridLayout_2.addLayout(self.gridLayout_4, 3, 0, 1, 1)
 
-        self.widget = QWidget(LocalFavorite)
-        self.widget.setObjectName(u"widget")
-        self.horizontalLayout_2 = QHBoxLayout(self.widget)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.label = QLabel(self.widget)
-        self.label.setObjectName(u"label")
+        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
 
-        self.horizontalLayout_2.addWidget(self.label)
+        self.gridLayout_2.addLayout(self.horizontalLayout_3, 1, 0, 1, 1)
 
-        self.lineEdit = QLineEdit(self.widget)
-        self.lineEdit.setObjectName(u"lineEdit")
+        self.gridLayout_3 = QGridLayout()
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.bookList = ComicListWidget(LocalFavorite)
+        self.bookList.setObjectName(u"bookList")
+        self.bookList.setStyleSheet(u"")
 
-        self.horizontalLayout_2.addWidget(self.lineEdit)
+        self.gridLayout_3.addWidget(self.bookList, 0, 0, 1, 1)
 
 
-        self.gridLayout_2.addWidget(self.widget, 0, 0, 1, 1)
+        self.gridLayout_2.addLayout(self.gridLayout_3, 2, 0, 1, 1)
 
 
         self.retranslateUi(LocalFavorite)
@@ -154,18 +181,26 @@ class Ui_LocalFavorite(object):
 
     def retranslateUi(self, LocalFavorite):
         LocalFavorite.setWindowTitle(QCoreApplication.translate("LocalFavorite", u"\u6536\u85cf", None))
+        self.label.setText(QCoreApplication.translate("LocalFavorite", u"\u641c\u7d22\uff1a", None))
         self.msgLabel.setText("")
         self.sortKeyCombox.setItemText(0, QCoreApplication.translate("LocalFavorite", u"\u6536\u85cf\u65f6\u95f4", None))
+        self.sortKeyCombox.setItemText(1, QCoreApplication.translate("LocalFavorite", u"\u66f4\u65b0\u65f6\u95f4", None))
+        self.sortKeyCombox.setItemText(2, QCoreApplication.translate("LocalFavorite", u"\u521b\u5efa\u65f6\u95f4", None))
+        self.sortKeyCombox.setItemText(3, QCoreApplication.translate("LocalFavorite", u"\u7231\u5fc3\u6570", None))
+        self.sortKeyCombox.setItemText(4, QCoreApplication.translate("LocalFavorite", u"\u89c2\u770b\u6570", None))
+        self.sortKeyCombox.setItemText(5, QCoreApplication.translate("LocalFavorite", u"\u7ae0\u8282\u6570", None))
+        self.sortKeyCombox.setItemText(6, QCoreApplication.translate("LocalFavorite", u"\u56fe\u7247\u6570", None))
 
         self.sortIdCombox.setItemText(0, QCoreApplication.translate("LocalFavorite", u"\u964d\u5e8f", None))
         self.sortIdCombox.setItemText(1, QCoreApplication.translate("LocalFavorite", u"\u5347\u5e8f", None))
 
+        self.importButton.setText(QCoreApplication.translate("LocalFavorite", u"\u4ece\u6536\u85cf\u5bfc\u5165", None))
+        self.tipText.setText("")
         self.nums.setText(QCoreApplication.translate("LocalFavorite", u"\u6536\u85cf\u6570\uff1a", None))
         self.pages.setText(QCoreApplication.translate("LocalFavorite", u"\u9875", None))
         self.jumpButton.setText(QCoreApplication.translate("LocalFavorite", u"\u8df3\u8f6c", None))
 #if QT_CONFIG(shortcut)
         self.jumpButton.setShortcut(QCoreApplication.translate("LocalFavorite", u"Return", None))
 #endif // QT_CONFIG(shortcut)
-        self.label.setText(QCoreApplication.translate("LocalFavorite", u"\u641c\u7d22\uff1a", None))
     # retranslateUi
 

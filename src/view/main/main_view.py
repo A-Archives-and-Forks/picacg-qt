@@ -173,6 +173,8 @@ class MainView(Main, QtTaskBase):
         self.navigationWidget.nasButton.clicked.connect(partial(self.SwitchWidgetAndClear, self.subStackWidget.indexOf(self.nasView)))
         self.navigationWidget.batchSrButton.clicked.connect(
             partial(self.SwitchWidgetAndClear, self.subStackWidget.indexOf(self.batchSrView)))
+        self.navigationWidget.localFavoriteButton.clicked.connect(
+            partial(self.SwitchWidgetAndClear, self.subStackWidget.indexOf(self.localFavoriteView)))
 
 
     def RetranslateUi(self):

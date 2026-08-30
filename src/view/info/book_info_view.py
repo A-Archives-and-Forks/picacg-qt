@@ -84,6 +84,7 @@ class BookInfoView(QtWidgets.QWidget, Ui_BookInfo, QtTaskBase):
         self.user_icon.installEventFilter(self)
 
         self.commentButton.clicked.connect(self.OpenComment)
+        self.localButton.clicked.connect(self.AddLocalFavorite)
         # self.epsListWidget.verticalScrollBar().rangeChanged.connect(self.ChageMaxNum)
         self.epsListWidget.setMinimumHeight(300)
 
@@ -120,6 +121,11 @@ class BookInfoView(QtWidgets.QWidget, Ui_BookInfo, QtTaskBase):
             self.favoriteButton.setIcon(QIcon(":/png/icon/icon_like.png"))
         else:
             self.favoriteButton.setIcon(QIcon(":/png/icon/icon_like_off.png"))
+
+        if QtOwner().localFavoriteView.IsHave(self.bookId):
+            self.localButton.setIcon(QIcon(":/png/icon/icon_like.png"))
+        else:
+            self.localButton.setIcon(QIcon(":/png/icon/icon_like_off.png"))
 
         path = os.path.join(Setting.GetCachePath(), "book/{}".format(self.bookId))
         waifuPath = os.path.join(Setting.GetCachePath(), "waifu2x/book/{}".format(self.bookId))
@@ -539,6 +545,19 @@ class BookInfoView(QtWidgets.QWidget, Ui_BookInfo, QtTaskBase):
             QtOwner().favoriteView.AddFavorites(self.bookId)
         else:
             QtOwner().favoriteView.DelAndFavoritesBack({"st": Status.Ok}, self.bookId)
+
+    def AddLocalFavorite(self):
+        if QtOwner().localFavoriteView.IsHave(self.bookId):
+            QtOwner().localFavoriteView.DelFavorites(self.bookId)
+            QtOwner().ShowMsg(Str.GetStr(Str.DelFavoriteSuc))
+            self.UpdateFavoriteIcon()
+        else:
+            bookInfo = BookMgr().GetBook(self.bookId)
+            if bookInfo:
+                QtOwner().localFavoriteView.AddFavorites(bookInfo)
+                QtOwner().ShowMsg(Str.GetStr(Str.AddFavoriteSuc))
+                self.UpdateFavoriteIcon()
+                QtOwner().OpenLocalFavoriteFold(self.bookId)
 
     def ClearCache(self):
         path = os.path.join(Setting.GetCachePath(), "book/{}".format(self.bookId))

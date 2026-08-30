@@ -329,10 +329,6 @@ class SqlServer(Singleton):
 
         addData, tick, version = data
         with conn:
-            timeArray = time.localtime(tick)
-            strTime = "{}-{}-{} {}:{}:{}".format(timeArray.tm_year, timeArray.tm_mon, timeArray.tm_mday, timeArray.tm_hour, timeArray.tm_min, timeArray.tm_sec)
-            sql = "update system set sub_version={}, time='{}' where id='{}'".format(version, strTime, config.DbVersion)
-            cur.execute(sql)
 
             for book in addData:
                 if not book:
@@ -366,6 +362,11 @@ class SqlServer(Singleton):
                     sql = "replace INTO category(bookId, category) VALUES ('{0}', {1}); ".format(book.id, index)
                     sql = sql.replace("\0", "")
                     cur.execute(sql)
+
+            timeArray = time.localtime(tick)
+            strTime = "{}-{}-{} {}:{}:{}".format(timeArray.tm_year, timeArray.tm_mon, timeArray.tm_mday, timeArray.tm_hour, timeArray.tm_min, timeArray.tm_sec)
+            sql = "update system set sub_version={}, time='{}' where id='{}'".format(version, strTime, config.DbVersion)
+            cur.execute(sql)
 
             Log.Info("db: update database, len:{}, version:{}, tick:{} ".format(len(addData), tick, version))
 
@@ -543,7 +544,7 @@ class SqlServer(Singleton):
         return sql
 
     @staticmethod
-    def Search2(wordList, isTitle, isAuthor, isDes, isTag, isCategory, isCreator, categorys, page, sortKey=0, sortId=0, isFinish=False):
+    def Search2(wordList, isTitle, isAuthor, isDes, isTag, isCategory, isCreator, categorys, page, sortKey=0, sortId=0, isFinish=False, limitIds=None):
         # wordList = wordList.replace("'", "\\'")
         wordList = Converter('zh-hans').convert(wordList).strip(" ")
         wordList2 = wordList.split(" ")
@@ -610,6 +611,9 @@ class SqlServer(Singleton):
             sql = sql.replace(", share_id", "")
         if isFinish:
             sql += " and finished=1 "
+        if limitIds:
+            limitIds = ["'"+v+"'" for v in limitIds]
+            sql += " and id in ({})".format(",".join(limitIds))
 
         if selectNumSql:
             selectNumSql = "SELECT count(*) FROM book WHERE {}".format(selectNumSql)
@@ -633,12 +637,15 @@ class SqlServer(Singleton):
             sql += "ORDER BY epsCount "
         elif sortKey == 5:
             sql += "ORDER BY pages "
+        else:
+            sql += "ORDER BY id "
 
         if sortId == 0:
             sql += "DESC"
         else:
             sql += "ASC"
-        sql += "  limit {},{};".format((page-1)*20, 20)
+        if page >= 0:
+            sql += "  limit {},{};".format((page-1)*20, 20)
         return sql, sql2Data, selectNumSql
 
     @staticmethod

@@ -17,6 +17,7 @@ class QtOwner(Singleton):
         self._localServer = None
         self.backSock = None
         self.isUseDb = True
+        self.canUseDb = False
         self.isDbHavePicaID = False
         self.isOfflineModel = False
         self.closeType = 1   # 1普通， 2关闭弹窗触发， 3任务栏触发
@@ -189,7 +190,7 @@ class QtOwner(Singleton):
         loginView.Close.connect(callBack)
         return
 
-    def OpenFavoriteFold(self, bookId="", fid="", moveBack=None, foldChangeBack=None):
+    def OpenLocalFavoriteFold(self, bookId="", moveBack=None, foldChangeBack=None):
         from view.user.local_favorite_fold_view import LocalFavoriteFoldView
         w = LocalFavoriteFoldView(QtOwner().owner, bookId)
         w.show()
@@ -326,8 +327,8 @@ class QtOwner(Singleton):
         self.owner.SwitchWidget(self.owner.bookInfoView2, **arg)
 
     def OpenSomeDownload(self, bookList=None):
-        arg = {"bookList": bookList}
-        self.owner.SwitchWidget(self.owner.downloadSomeView, **arg)
+        arg = {"books": bookList}
+        self.owner.SwitchWidget(self.owner.downloadAllView, **arg)
         
     def OpenLocalBook(self, bookId):
         self.owner.localReadView.OpenLocalBook(bookId)

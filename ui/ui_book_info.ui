@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>892</width>
+    <width>826</width>
     <height>719</height>
    </rect>
   </property>
@@ -54,8 +54,8 @@ QScrollArea {background-color:transparent;}</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-134</y>
-        <width>855</width>
+        <y>0</y>
+        <width>789</width>
         <height>876</height>
        </rect>
       </property>
@@ -593,6 +593,32 @@ QPushButton:hover
                   </widget>
                  </item>
                  <item>
+                  <widget class="QToolButton" name="localButton">
+                   <property name="minimumSize">
+                    <size>
+                     <width>40</width>
+                     <height>40</height>
+                    </size>
+                   </property>
+                   <property name="text">
+                    <string>本地</string>
+                   </property>
+                   <property name="icon">
+                    <iconset resource="../res/images.qrc">
+                     <normaloff>:/png/icon/icon_like_off.png</normaloff>:/png/icon/icon_like_off.png</iconset>
+                   </property>
+                   <property name="iconSize">
+                    <size>
+                     <width>50</width>
+                     <height>50</height>
+                    </size>
+                   </property>
+                   <property name="toolButtonStyle">
+                    <enum>Qt::ToolButtonTextBesideIcon</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="IconToolButton" name="commentButton">
                    <property name="minimumSize">
                     <size>
@@ -929,6 +955,7 @@ QListWidget::item {
  <resources>
   <include location="../res/images.qrc"/>
   <include location="../res/images.qrc"/>
+  <include location="../../JMComic-qt/res/images.qrc"/>
  </resources>
  <connections>
   <connection>

@@ -6,26 +6,41 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>628</width>
-    <height>334</height>
+    <width>756</width>
+    <height>404</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>收藏</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="1" column="0">
-    <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="0">
-      <widget class="ComicListWidget" name="bookList">
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="0" column="0">
+    <widget class="QWidget" name="widget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>搜索：</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="folderBox">
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEdit"/>
+      </item>
+     </layout>
+    </widget>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <layout class="QGridLayout" name="gridLayout_4">
      <item row="0" column="0">
       <layout class="QHBoxLayout" name="horizontalLayout">
@@ -50,6 +65,36 @@
          <item>
           <property name="text">
            <string>收藏时间</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>更新时间</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>创建时间</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>爱心数</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>观看数</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>章节数</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>图片数</string>
           </property>
          </item>
         </widget>
@@ -83,6 +128,20 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="importButton">
+         <property name="text">
+          <string>从收藏导入</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="tipText">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="Line" name="line_2">
@@ -168,21 +227,19 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="0">
-    <widget class="QWidget" name="widget" native="true">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>搜索：</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLineEdit" name="lineEdit"/>
-      </item>
-     </layout>
-    </widget>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_3"/>
+   </item>
+   <item row="2" column="0">
+    <layout class="QGridLayout" name="gridLayout_3">
+     <item row="0" column="0">
+      <widget class="ComicListWidget" name="bookList">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

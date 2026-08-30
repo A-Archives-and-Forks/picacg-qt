@@ -40,8 +40,10 @@ class Book(object):
         self.shareId = 0
         self.title = ""           # 标题
         self.author = ""          # 作者
+        self.chineseTeam = ""          # 作者
         self.description = ""     # 描述
         self.epsCount = 0         # 章节数
+        self.pagesCount = 0
         self.finished = False     # 是否完本
         self.updated_at = ""
         self.created_at = ""
@@ -52,7 +54,7 @@ class Book(object):
         self.maxLoadEps = 0
         self.epsLimit = 0
         self.epsDict = {}
-        self.thumb = {}
+        self.thumb = {}           # originalName, path, fileServer
 
     @property
     def id(self):

@@ -165,7 +165,7 @@ class ComicListWidget(BaseListWidget):
         _id = v.id
         finished = v.finished
         pagesCount = v.pages
-        likesCount = str(v.likesCount)
+        likesCount = str(v.likesCount) if v.likesCount else ""
         updated_at = v.updated_at
         categories = v.categories
         updated_at = v.updated_at
@@ -367,6 +367,12 @@ class ComicListWidget(BaseListWidget):
             clipboard.setText(data)
         pass
 
+    def MoveHandler(self, index):
+        widget = self.indexWidget(index)
+        if widget:
+            assert isinstance(widget, ComicItemWidget)
+            self.MoveCallBack(widget.id)
+
     def OpenBookDownloadAll(self):
         from view.download.download_all_item import DownloadAllItem
         allData = DownloadAllItem.MakeAllItem(self)
@@ -380,14 +386,14 @@ class ComicListWidget(BaseListWidget):
     def DelCallBack(self, cfgId):
         return
 
+    def MoveCallBack(self, cfgId):
+        return
+
     def DownloadHandler(self, index):
         widget = self.indexWidget(index)
         if widget:
             QtOwner().OpenEpsInfo(widget.id)
         pass
-
-    def MoveHandler(self, index):
-        return
 
     def NasUploadHandler(self, nasId, index):
         widget = self.indexWidget(index)

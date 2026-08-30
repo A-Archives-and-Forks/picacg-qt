@@ -189,7 +189,7 @@ class SearchView(QWidget, Ui_Search, QtTaskBase):
 
             if isLocal is not None:
                 self.isLocal = isLocal
-            if not QtOwner().isUseDb:
+            if not QtOwner().canUseDb:
                 self.isLocal = False
             self.SetEnable(self.isLocal)
             self.isTitle = kwargs.get("isTitle")
@@ -231,7 +231,7 @@ class SearchView(QWidget, Ui_Search, QtTaskBase):
             allBookIds = []
             for v in commentsData.get("recommendations", []):
                 allBookIds.append(v)
-            if QtOwner().owner.helpView.isHaveDb:
+            if QtOwner().canUseDb:
                 sql = SqlServer.GetBookByIds(allBookIds)
                 self.AddSqlTask("book", sql, SqlServer.TaskTypeSelectBook, callBack=self.OpenLocalRecommendationBack, backParam=1)
             else:
@@ -266,7 +266,7 @@ class SearchView(QWidget, Ui_Search, QtTaskBase):
     def SendSearchCategories(self, page):
         sort = ["dd", "da", "ld", "vd"]
         QtOwner().ShowLoading()
-        if QtOwner().isUseDb and self.categories in CateGoryMgr().allCategorise:
+        if QtOwner().canUseDb and self.categories in CateGoryMgr().allCategorise:
             categorys = self.GetSelectCategory()
             if len(categorys) > 0:
                 self.categoryNum.setText("已选择{}个分类".format(len(categorys)))

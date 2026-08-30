@@ -50,6 +50,7 @@ from view.tool.local_read_view import LocalReadView
 from view.tool.waifu2x_tool_view import Waifu2xToolView
 from view.user.favorite_view import FavoriteView
 from view.user.history_view import HistoryView
+from view.user.local_favorite_view import LocalFavoriteView
 from view.user.login_new_view import LoginNewView
 
 class Ui_Main(object):
@@ -184,6 +185,9 @@ class Ui_Main(object):
         self.waifu2xToolView = Waifu2xToolView()
         self.waifu2xToolView.setObjectName(u"waifu2xToolView")
         self.subStackWidget.addWidget(self.waifu2xToolView)
+        self.localFavoriteView = LocalFavoriteView()
+        self.localFavoriteView.setObjectName(u"localFavoriteView")
+        self.subStackWidget.addWidget(self.localFavoriteView)
         self.localReadView = LocalReadView()
         self.localReadView.setObjectName(u"localReadView")
         self.subStackWidget.addWidget(self.localReadView)
