@@ -897,7 +897,7 @@ class ReadGraphicsView(QGraphicsView, SmoothScroll):
         # TODO 取消其他图片的显示, 节约内存占用
         if ReadMode.isScroll(self.initReadMode):
             start = max(0, self.curIndex - 1)
-            self.ClearOtherPictureShow(range(start, self.curIndex + config.PreLook))
+            self.ClearOtherPictureShow(range(start, self.curIndex + Setting.PictureShowCount.value))
             # if index + config.PreLoading < self.maxPic:
             #     self.SetPixIem(index + config.PreLoading, None)
         elif ReadMode.isDouble(self.initReadMode):
@@ -913,7 +913,7 @@ class ReadGraphicsView(QGraphicsView, SmoothScroll):
             # if index - 1 >= 0:
             #     self.SetPixIem(index - 1, None)
             start = max(0, self.curIndex - 1)
-            self.ClearOtherPictureShow(range(start, self.curIndex + config.PreLook))
+            self.ClearOtherPictureShow(range(start, self.curIndex + Setting.PictureShowCount.value))
         elif ReadMode.isDouble(self.initReadMode):
             self.SetPixIem(index + 1, None)
         self.isLastPageMode = False

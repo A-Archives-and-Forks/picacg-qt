@@ -203,6 +203,8 @@ class NasView(QtWidgets.QWidget, Ui_Nas, NasStatus):
             widget.address.setText("webdav:/" + v.address + ":" + str(v.port))
         elif v.type == 1:
             widget.address.setText("smb:/" + v.address + ":" + str(v.port))
+        elif v.type == 3:
+            widget.address.setText("smb3:/" + v.address + ":" + str(v.port))
         widget.waifu2x.setEnabled(bool(v.is_waifu2x))
         widget.user.setText(v.user)
         widget.compress.setText(v.GetCompressName())
@@ -214,14 +216,14 @@ class NasView(QtWidgets.QWidget, Ui_Nas, NasStatus):
 
         self.listWidget.setItemWidget(item, widget)
 
-    def AddNasUpload(self, nasId, bookId):
-        bookId = str(bookId)
-        QtOwner().ShowLoading()
-        self.AddSqlTask("book", bookId, SqlServer.TaskTypeCacheBook, callBack=self.SendLocalBack, backParam=(nasId, bookId))
-
-        # self.AddHttpTask(req.GetComicsBookReq(bookId), self.OpenEpsInfoBack, (nasId, bookId))
-        # self.AddNasUploadCache(nasId, bookId)
-        return True
+    # def AddNasUpload(self, nasId, bookId):
+    #     bookId = str(bookId)
+    #     QtOwner().ShowLoading()
+    #     self.AddSqlTask("book", bookId, SqlServer.TaskTypeCacheBook, callBack=self.SendLocalBack, backParam=(nasId, bookId))
+    #
+    #     # self.AddHttpTask(req.GetComicsBookReq(bookId), self.OpenEpsInfoBack, (nasId, bookId))
+    #     # self.AddNasUploadCache(nasId, bookId)
+    #     return True
 
     def SendLocalBack(self, books, v):
         nasId, bookId = v
@@ -257,12 +259,19 @@ class NasView(QtWidgets.QWidget, Ui_Nas, NasStatus):
         if not info or not nasInfo:
             QtOwner().ShowError(Str.GetStr(Str.NotFoundBook))
             return
+        self.AddNasUploadCacheByBook(nasId, info)
+
+    def AddNasUploadCacheByBook(self, nasId, info):
+        nasInfo = self.nasDict.get(nasId)
+        if not nasInfo:
+            QtOwner().ShowError(Str.GetStr(Str.NotFoundBook))
+            return
         if info.epsCount <= 0:
             QtOwner().ShowError(Str.GetStr(Str.SpaceEps))
             return
         epsIds = list(range(info.epsCount))
-        QtOwner().downloadView.AddDownload(bookId, epsIds, nasInfo.is_waifu2x)
-        self.AddNasUpload2(info.title, nasId, bookId, True)
+        QtOwner().downloadView.AddDownload(info.id, epsIds, nasInfo.is_waifu2x)
+        self.AddNasUpload2(info.title, nasId, info.id, True)
 
     # def OpenEpsInfoBack(self, raw, v):
     #     QtOwner().CloseLoading()

@@ -190,9 +190,9 @@ class QtOwner(Singleton):
         loginView.Close.connect(callBack)
         return
 
-    def OpenLocalFavoriteFold(self, bookId="", moveBack=None, foldChangeBack=None):
+    def OpenLocalFavoriteFold(self, bookIds="", moveBack=None, foldChangeBack=None):
         from view.user.local_favorite_fold_view import LocalFavoriteFoldView
-        w = LocalFavoriteFoldView(QtOwner().owner, bookId)
+        w = LocalFavoriteFoldView(QtOwner().owner, bookIds)
         w.show()
         if moveBack:
             w.MoveOkBack.connect(moveBack)

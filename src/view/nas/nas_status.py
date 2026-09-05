@@ -1,4 +1,5 @@
 from config import config
+from server import req
 from server.sql_server import SqlServer
 from task.qt_task import QtTaskBase
 from tools.book import BookMgr
@@ -141,11 +142,22 @@ class NasStatus(QtTaskBase):
             return
         book = BookMgr().GetBook(task.bookId)
         if not book:
-            self.SetNewStatus(task, task.Error)
+            # self.SetNewStatus(task, task.Error, Str.CvXMLErr)
+            self.AddHttpTask(req.GetComicsBookReq(task.bookId), self.GetXmlInfoBack2, taskId)
             return
         self.StartItemDownload(task)
 
-    def UploadStCallBack(self, st, taskId):
+    def GetXmlInfoBack2(self, raw, taskId):
+        task = self.downloadDict.get(taskId)
+        if not task:
+            return
+        book = BookMgr().GetBook(task.bookId)
+        if not book:
+            self.SetNewStatus(task, task.Error, Str.CvXMLErr)
+            return
+        self.StartItemDownload(task)
+
+    def UploadStCallBack(self, st, taskId, msg):
         task = self.downloadDict.get(taskId)
         if not task:
             return

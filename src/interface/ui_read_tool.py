@@ -41,7 +41,7 @@ class Ui_ReadImg(object):
         self.scrollArea22.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, -129, 301, 897))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 301, 897))
         self.verticalLayout_2 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout = QVBoxLayout()
@@ -288,6 +288,7 @@ class Ui_ReadImg(object):
         self.horizontalLayout_11.addWidget(self.label_5)
 
         self.comboBox = WheelComboBox(self.scrollAreaWidgetContents)
+        self.comboBox.addItem("")
         self.comboBox.addItem("")
         self.comboBox.addItem("")
         self.comboBox.addItem("")
@@ -566,6 +567,7 @@ class Ui_ReadImg(object):
         self.comboBox.setItemText(5, QCoreApplication.translate("ReadImg", u"\u53f3\u5de6\u6eda\u52a8", None))
         self.comboBox.setItemText(6, QCoreApplication.translate("ReadImg", u"\u53f3\u5de6\u53cc\u9875(\u6eda\u8f6e\u6b63\u5e8f)", None))
         self.comboBox.setItemText(7, QCoreApplication.translate("ReadImg", u"\u7b49\u5bbd\u6a21\u5f0f", None))
+        self.comboBox.setItemText(8, QCoreApplication.translate("ReadImg", u"\u53f3\u5de6\u6eda\u52a8(\u6eda\u8f6e\u6b63\u5e8f)", None))
 
         self.zoomLabel.setText(QCoreApplication.translate("ReadImg", u"\u7f29\u653e\uff08120%\uff09", None))
         self.label_7.setText(QCoreApplication.translate("ReadImg", u"\u81ea\u52a8\u6eda\u52a8/\u7ffb\u9875", None))

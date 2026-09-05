@@ -73,6 +73,7 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         # self.coverNoise.currentIndexChanged.connect(partial(self.CheckRadioEvent, Setting.CoverLookNoise))
         # self.downModel.currentIndexChanged.connect(partial(self.CheckRadioEvent, Setting.DownloadModel))
         # self.downNoise.currentIndexChanged.connect(partial(self.CheckRadioEvent, Setting.DownloadNoise))
+        self.coverLvBox.currentIndexChanged.connect(partial(self.CheckRadioEvent, Setting.DownloadCoverLv))
 
         self.readModelName.clicked.connect(partial(self.CheckOpenSrSelect, Setting.LookModelName, self.readModelName))
         self.coverModelName.clicked.connect(partial(self.CheckOpenSrSelect, Setting.CoverLookModelName, self.coverModelName))
@@ -100,6 +101,9 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         self.prefetchCount.valueChanged.connect(partial(self.SpinBoxEvent, Setting.PicturePrefetchCount))
         self.prefetchFrontCount.valueChanged.connect(partial(self.SpinBoxEvent, Setting.PicturePrefetchFrontCount))
 
+        self.showCount.valueChanged.connect(partial(self.SpinBoxEvent, Setting.PictureShowCount))
+        self.showFrontCount.valueChanged.connect(partial(self.SpinBoxEvent, Setting.PictureShowFrontCount))
+
         self.generalButton.clicked.connect(partial(self.MoveToLabel, self.generalLabel))
         self.prefetchButton.clicked.connect(partial(self.MoveToLabel, self.prefetchLabel))
         # self.readButton.clicked.connect(partial(self.MoveToLabel, self.readLabel))
@@ -125,6 +129,7 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
             self.prefetchCountHelp,
             self.crossChapterPrefetchHelp,
             self.prefetchWholeChapterHelp,
+            self.showCountHelp
         )
         for label in self.prefetchHelpLabels:
             label.setMouseTracking(True)
@@ -275,6 +280,7 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         self.SetRadioGroup("saveNameButton", Setting.SaveNameType.value)
         self.SetRadioGroup("showCloseButton", Setting.ShowCloseType.value)
         self.coverSize.setValue(Setting.CoverSize.value)
+        self.coverLvBox.setCurrentIndex(Setting.DownloadCoverLv.value)
         self.categorySize.setValue(Setting.CategorySize.value)
         self.SetRadioGroup("logutton", Setting.LogIndex.value)
         self.httpEdit.setText(Setting.HttpProxy.value)
@@ -284,6 +290,8 @@ class SettingView(QtWidgets.QWidget, Ui_SettingNew):
         self.openglBox.setChecked(Setting.IsOpenOpenGL.value)
         self.prefetchCount.setValue(Setting.PicturePrefetchCount.value)
         self.prefetchFrontCount.setValue(Setting.PicturePrefetchFrontCount.value)
+        self.showCount.setValue(Setting.PictureShowCount.value)
+        self.showFrontCount.setValue(Setting.PictureShowFrontCount.value)
         self.crossChapterPrefetch.setChecked(Setting.CrossChapterPrefetch.value)
         self.prefetchWholeChapter.setChecked(Setting.PrefetchWholeChapter.value)
         self.grabGestureBox.setChecked(Setting.IsGrabGesture.value)

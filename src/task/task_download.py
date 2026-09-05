@@ -48,6 +48,7 @@ class QtDownloadTask(object):
         self.epsId = 0        # 下载的章节
         self.index = 0        # 下载的索引
         self.resetCnt = 0     # 重试次数
+        from qt_owner import QtOwner
         self.isLocal = True
         self.status = self.Waiting
 
@@ -188,6 +189,8 @@ class TaskDownload(TaskBase, QtTaskBase):
         return self.taskId
 
     def HandlerDownload(self, data, v):
+        if not data:
+            data = {"st": Status.Error}
         (taskId, newStatus) = v
         task = self.tasks.get(taskId)
         if not task:

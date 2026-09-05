@@ -336,7 +336,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
             return
 
         # 预转换QImage
-        preRealQImage = list(range(max(0, self.curIndex-min(2, Setting.PicturePrefetchFrontCount.value)), self.curIndex + config.PreLook))
+        preRealQImage = list(range(max(0, self.curIndex-min(Setting.PictureShowFrontCount.value, Setting.PicturePrefetchFrontCount.value)), self.curIndex + Setting.PictureShowCount.value))
 
         # The setting counts pages after the current page. Keep the current page
         # in memory separately, so page 10 + count 10 means pages 11 through 20.
@@ -582,8 +582,8 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
 
     def ShowImgAll(self):
         if self.stripModel in [ReadMode.UpDown, ReadMode.RightLeftScroll, ReadMode.LeftRightScroll, ReadMode.RightLeftScroll2]:
-            start = max(0, self.curIndex - 1)
-            size = config.PreLook
+            start = max(0, self.curIndex - Setting.PictureShowFrontCount.value)
+            size = Setting.PictureShowCount.value
         elif ReadMode.isDouble(self.stripModel):
             start = self.curIndex
             size = 2
@@ -1008,7 +1008,7 @@ class ReadView(QtWidgets.QWidget, QtTaskBase):
             data = info.waifuData
         else:
             _, _, mat, _ = ToolUtil.GetPictureSize(info.data)
-            path = "{}_{}.{}}".format(self.bookId, self.curIndex+1, mat)
+            path = "{}_{}.{}".format(self.bookId, self.curIndex+1, mat)
             data = info.data
         if not data:
             return

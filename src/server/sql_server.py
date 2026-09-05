@@ -45,6 +45,10 @@ class DbBook(object):
         self.totalLikes = 0        #
         self.totalViews = 0        #
 
+    @property
+    def pagesCount(self):
+        return self.pages
+
     def CopyFromJson(self, data):
         for k, v in data.items():
             setattr(self, k, v)

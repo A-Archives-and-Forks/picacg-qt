@@ -80,7 +80,14 @@ class LocalFavoriteDb(object):
         return
 
     def AddBookToDB(self, book):
-        assert isinstance(book, Book)
+        if isinstance(book, DbBook):
+            url = book.fileServer
+            path = book.path
+        elif isinstance(book, Book):
+            url = book.thumb.get('fileServer', "")
+            path = book.thumb.get('path', "")
+        else:
+            raise
         tick = int(time.time())
         query = QSqlQuery(self.db)
         sql = "replace INTO favorite(bookId, title, author, chineseTeam, description, epsCount, pages, finished, categories, tags," \
@@ -96,7 +103,7 @@ class LocalFavoriteDb(object):
                    Converter('zh-hans').convert(",".join(book.categories)).replace("'", "''"),
                    Converter('zh-hans').convert(",".join(book.tags).replace("'", "''")),
                    book.created_at, book.updated_at,
-                   book.thumb.get('path', ""), book.thumb.get('fileServer', ""),
+                   path, url,
                    tick)
         suc = query.exec_(sql)
         if not suc:
@@ -250,7 +257,7 @@ class LocalFavoriteDb(object):
 
 
         if page >= 0:
-            sql += "  limit {},{};".format((page - 1) * 20, 20)
+            sql += "  limit {},{};".format((page - 1) * 100, 100)
 
         self.db.exec()
         query = QSqlQuery(self.db)

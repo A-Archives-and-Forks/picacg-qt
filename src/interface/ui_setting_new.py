@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QCommandLinkButton,
     QFrame, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QRadioButton, QSizePolicy, QSpacerItem,
-    QSpinBox, QToolButton, QVBoxLayout, QWidget)
+    QToolButton, QVBoxLayout, QWidget)
 
 from component.box.wheel_combo_box import WheelComboBox
 from component.box.wheel_double_spin_box import WheelDoubleSpinBox
@@ -88,7 +88,7 @@ class Ui_SettingNew(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, -1066, 727, 3035))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, -1117, 727, 3120))
         self.scrollAreaWidgetContents.setStyleSheet(u"")
         self.verticalLayout_4 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
@@ -391,6 +391,30 @@ class Ui_SettingNew(object):
         self.frame_14.setStyleSheet(u"")
         self.verticalLayout_17 = QVBoxLayout(self.frame_14)
         self.verticalLayout_17.setObjectName(u"verticalLayout_17")
+        self.label_41 = QLabel(self.frame_14)
+        self.label_41.setObjectName(u"label_41")
+        self.label_41.setFont(font1)
+
+        self.verticalLayout_17.addWidget(self.label_41)
+
+        self.horizontalLayout_8 = QHBoxLayout()
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.coverLvBox = WheelComboBox(self.frame_14)
+        self.coverLvBox.addItem("")
+        self.coverLvBox.addItem("")
+        self.coverLvBox.addItem("")
+        self.coverLvBox.addItem("")
+        self.coverLvBox.setObjectName(u"coverLvBox")
+
+        self.horizontalLayout_8.addWidget(self.coverLvBox)
+
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_8.addItem(self.horizontalSpacer_2)
+
+
+        self.verticalLayout_17.addLayout(self.horizontalLayout_8)
+
         self.label_2 = QLabel(self.frame_14)
         self.label_2.setObjectName(u"label_2")
         self.label_2.setFont(font1)
@@ -576,7 +600,7 @@ class Ui_SettingNew(object):
 
         self.prefetchCountLayout.addWidget(self.label)
 
-        self.prefetchFrontCount = QSpinBox(self.prefetchFrame)
+        self.prefetchFrontCount = WheelSpinBox(self.prefetchFrame)
         self.prefetchFrontCount.setObjectName(u"prefetchFrontCount")
         self.prefetchFrontCount.setValue(3)
 
@@ -596,7 +620,7 @@ class Ui_SettingNew(object):
         self.prefetchCount.setObjectName(u"prefetchCount")
         self.prefetchCount.setMinimum(1)
         self.prefetchCount.setMaximum(100)
-        self.prefetchCount.setValue(3)
+        self.prefetchCount.setValue(5)
 
         self.prefetchCountLayout.addWidget(self.prefetchCount)
 
@@ -614,6 +638,56 @@ class Ui_SettingNew(object):
 
 
         self.prefetchLayout.addLayout(self.prefetchCountLayout)
+
+        self.horizontalLayout_12 = QHBoxLayout()
+        self.horizontalLayout_12.setObjectName(u"horizontalLayout_12")
+        self.label_43 = QLabel(self.prefetchFrame)
+        self.label_43.setObjectName(u"label_43")
+
+        self.horizontalLayout_12.addWidget(self.label_43)
+
+        self.label_46 = QLabel(self.prefetchFrame)
+        self.label_46.setObjectName(u"label_46")
+
+        self.horizontalLayout_12.addWidget(self.label_46)
+
+        self.showFrontCount = WheelSpinBox(self.prefetchFrame)
+        self.showFrontCount.setObjectName(u"showFrontCount")
+        self.showFrontCount.setMaximum(10)
+        self.showFrontCount.setValue(2)
+
+        self.horizontalLayout_12.addWidget(self.showFrontCount)
+
+        self.label_48 = QLabel(self.prefetchFrame)
+        self.label_48.setObjectName(u"label_48")
+
+        self.horizontalLayout_12.addWidget(self.label_48)
+
+        self.label_47 = QLabel(self.prefetchFrame)
+        self.label_47.setObjectName(u"label_47")
+
+        self.horizontalLayout_12.addWidget(self.label_47)
+
+        self.showCount = WheelSpinBox(self.prefetchFrame)
+        self.showCount.setObjectName(u"showCount")
+        self.showCount.setMinimum(2)
+        self.showCount.setMaximum(20)
+        self.showCount.setValue(4)
+
+        self.horizontalLayout_12.addWidget(self.showCount)
+
+        self.showCountHelp = QLabel(self.prefetchFrame)
+        self.showCountHelp.setObjectName(u"showCountHelp")
+        self.showCountHelp.setStyleSheet(u"color: rgb(110, 110, 110); font-size: 16px;")
+
+        self.horizontalLayout_12.addWidget(self.showCountHelp)
+
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_12.addItem(self.horizontalSpacer_5)
+
+
+        self.prefetchLayout.addLayout(self.horizontalLayout_12)
 
         self.crossChapterPrefetchLayout = QHBoxLayout()
         self.crossChapterPrefetchLayout.setObjectName(u"crossChapterPrefetchLayout")
@@ -1467,6 +1541,12 @@ class Ui_SettingNew(object):
         self.label_38.setText(QCoreApplication.translate("SettingNew", u"\u5173\u95ed\u8bbe\u7f6e", None))
         self.showCloseButton0.setText(QCoreApplication.translate("SettingNew", u"\u5173\u95ed\u540e\u9000\u51fa", None))
         self.showCloseButton1.setText(QCoreApplication.translate("SettingNew", u"\u5173\u95ed\u540e\u6700\u5c0f\u5316\u5230\u6258\u76d8", None))
+        self.label_41.setText(QCoreApplication.translate("SettingNew", u"\u5c01\u9762\u4e0b\u8f7d\u753b\u8d28", None))
+        self.coverLvBox.setItemText(0, QCoreApplication.translate("SettingNew", u"\u9ed8\u8ba4", None))
+        self.coverLvBox.setItemText(1, QCoreApplication.translate("SettingNew", u"450x600", None))
+        self.coverLvBox.setItemText(2, QCoreApplication.translate("SettingNew", u"600x800", None))
+        self.coverLvBox.setItemText(3, QCoreApplication.translate("SettingNew", u"\u539f\u753b", None))
+
         self.label_2.setText(QCoreApplication.translate("SettingNew", u"\u5c01\u9762\u663e\u793a\u5927\u5c0f\uff08\u9ed8\u8ba4\u4e3a100%\uff09\uff1a", None))
         self.label_29.setText(QCoreApplication.translate("SettingNew", u"\u5206\u7c7b\u5c01\u9762\u5927\u5c0f\uff1a", None))
         self.label_44.setText(QCoreApplication.translate("SettingNew", u"\u6807\u9898\u663e\u793a\u884c\u6570", None))
@@ -1487,7 +1567,7 @@ class Ui_SettingNew(object):
         self.logutton1.setText(QCoreApplication.translate("SettingNew", u"Info", None))
         self.logutton2.setText(QCoreApplication.translate("SettingNew", u"Debug\uff08\u8be5\u8bbe\u7f6e\u5185\u542b\u654f\u611f\u6570\u636e\uff0clog\u6587\u4ef6\u8bf7\u52ff\u5206\u4eab\uff09", None))
         self.prefetchLabel.setText(QCoreApplication.translate("SettingNew", u"\u56fe\u7247\u9884\u53d6", None))
-        self.prefetchCountLabel.setText(QCoreApplication.translate("SettingNew", u"\u9884\u53d6\u56fe\u7247\u6570\u91cf\uff1a", None))
+        self.prefetchCountLabel.setText(QCoreApplication.translate("SettingNew", u"\u9884\u4e0b\u8f7d\u56fe\u7247\u6570\u91cf\uff1a", None))
         self.label.setText(QCoreApplication.translate("SettingNew", u"\u524d\uff1a", None))
         self.label_23.setText(QCoreApplication.translate("SettingNew", u"-", None))
         self.label_30.setText(QCoreApplication.translate("SettingNew", u"\u540e\uff1a", None))
@@ -1495,6 +1575,14 @@ class Ui_SettingNew(object):
         self.prefetchCountHelp.setToolTip(QCoreApplication.translate("SettingNew", u"\u8bbe\u7f6e\u5f53\u524d\u9875\u4e4b\u540e\u9884\u53d6\u7684\u56fe\u7247\u6570\u91cf\uff0c\u4e0b\u8f7d\u5e76\u53d1\u6570\u56fa\u5b9a\u4e3a5", None))
 #endif // QT_CONFIG(tooltip)
         self.prefetchCountHelp.setText(QCoreApplication.translate("SettingNew", u"\u24d8", None))
+        self.label_43.setText(QCoreApplication.translate("SettingNew", u"\u6eda\u52a8\u6a21\u5f0f\u663e\u793a\u8303\u56f4\uff1a", None))
+        self.label_46.setText(QCoreApplication.translate("SettingNew", u"\u524d\uff1a", None))
+        self.label_48.setText(QCoreApplication.translate("SettingNew", u"-", None))
+        self.label_47.setText(QCoreApplication.translate("SettingNew", u"\u540e\uff1a", None))
+#if QT_CONFIG(tooltip)
+        self.showCountHelp.setToolTip(QCoreApplication.translate("SettingNew", u"<html><head/><body><p>\u6eda\u52a8\u6a21\u5f0f\u4e0b\uff0c\u663e\u793a\u7684\u8303\u56f4\uff0c\u9700\u5c0f\u4e8e\u9884\u4e0b\u8f7d\u6570\u91cf\uff0c\u8c03\u5927\u6eda\u52a8\u65f6\u53ef\u51cf\u5c11\u52a0\u8f7d\u56fe\u7684\u95ea\u70c1</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
+        self.showCountHelp.setText(QCoreApplication.translate("SettingNew", u"\u24d8", None))
         self.crossChapterPrefetch.setText(QCoreApplication.translate("SettingNew", u"\u5141\u8bb8\u8de8\u7ae0\u8282\u9884\u53d6", None))
 #if QT_CONFIG(tooltip)
         self.crossChapterPrefetchHelp.setToolTip(QCoreApplication.translate("SettingNew", u"\u9884\u53d6\u9875\u6570\u5927\u4e8e\u5269\u4f59\u9875\u6570\u65f6\uff0c\u63d0\u524d\u9884\u53d6\u4e0b\u4e00\u7ae0\u8282", None))

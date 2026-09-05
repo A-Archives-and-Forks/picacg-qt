@@ -2,6 +2,7 @@ import base64
 import os
 import platform
 import random
+import re
 import struct
 import urllib
 import uuid
@@ -427,7 +428,8 @@ class DownloadBookReq(ServerReq):
     def __init__(self, url, loadPath="", cachePath="", savePath="", isReload=False, resetCnt=1):
         method = "Download"
         if "static/static" in url:
-            url = url.replace("static/static", "static/")
+            url = url.replace("static/static", "static")
+        url = self.FixCover(url)
         oldUrl = url
         jumpDomain = {
             "storage-b.picacomic.com": "img.picacomic.com",
@@ -448,9 +450,12 @@ class DownloadBookReq(ServerReq):
         if isJump:
             url = url.replace(host, jumpDomain[host])
             url = url.replace("/static/tobeimg", "")
+            oldUrl2 = url
+
             Log.Info("jump_301_url, {}->{}".format(oldUrl, url))
             allDomain = ["img.picacomic.com", "img.diwodiwo.xyz", "img.tipatipa.xyz"]
         else:
+            oldUrl2 = url
             allDomain = ["storage-b.picacomic.com", "s3.picacomic.com", "storage1.diwodiwo.xyz", "storage.tipatipa.xyz"]
         # if self.imageServer and host in GlobalConfig.ImageServerList.value:
         #     if not ToolUtil.IsipAddress(self.imageServer):
@@ -463,6 +468,8 @@ class DownloadBookReq(ServerReq):
         self.cachePath = cachePath
         self.savePath = savePath
         self.isReset = False
+        if "static/tobeimg/" in url:
+            url = url.replace("static/tobeimg/", "static/")
         self.url = url
         super(self.__class__, self).__init__(url, ToolUtil.GetDownImgHeader(),
                                              {}, method)
@@ -471,9 +478,18 @@ class DownloadBookReq(ServerReq):
         if realHost in allDomain:
             allDomain.remove(realHost)
         random.shuffle(allDomain)
-        self.resetUrl = [self.url.replace(realHost, i) for i in allDomain]
+        self.resetUrl = [oldUrl2.replace(realHost, i) for i in allDomain]
         self.resetCnt = max(resetCnt, len(self.resetUrl)//2)
 
+    def FixCover(self, url):
+        if Setting.DownloadCoverLv.value == 0:
+            return url
+        elif Setting.DownloadCoverLv.value == 1:
+            return url.replace(":300:400", ":450:600")
+        elif Setting.DownloadCoverLv.value == 2:
+            return url.replace(":300:400", ":600:800")
+        else:
+            return re.sub(r"\/rs:fill:\d+:\d+:\d+\/\w:\w", "", url)
 
 # 获得评论
 class GetCommentsReq(ServerReq):

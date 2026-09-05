@@ -90,6 +90,7 @@ class Setting:
     CoverSize = SettingValue("GeneraSetting", 100, False)  #
     TitleLine = SettingValue("GeneraSetting", 2, False)  #
     NotCategoryShow = SettingValue("GeneraSetting", 0, False)  #
+    DownloadCoverLv = SettingValue("GeneraSetting", 0, False)  #
 
     CategorySize = SettingValue("GeneraSetting", 80, False)  #
     # ScaleLevel = SettingValue("GeneraSetting", 0, True, ["Auto", 100, 125, 150, 175, 200])
@@ -178,6 +179,10 @@ class Setting:
     PicturePrefetchCount = SettingValue("ReadSetting", 5, False)
     CrossChapterPrefetch = SettingValue("ReadSetting", 1, False)
     PrefetchWholeChapter = SettingValue("ReadSetting", 0, False)
+
+    PictureShowFrontCount = SettingValue("ReadSetting", 2, False)
+    PictureShowCount = SettingValue("ReadSetting", 4, False)
+
     IsOpenOpenGL = SettingValue("ReadSetting", 0, True)
 
     # 批量超分

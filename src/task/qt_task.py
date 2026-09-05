@@ -20,7 +20,7 @@ class QtTaskQObject(QObject):
     sqlBack = Signal(int, bytes)
     localBack = Signal(int, int, list)
     localReadBack = Signal(int, int, bytes)
-    uploadBack = Signal(int, int)
+    uploadBack = Signal(int, int, str)
 
     def __init__(self):
         super(self.__class__, self).__init__()

@@ -555,7 +555,6 @@ class BookInfoView(QtWidgets.QWidget, Ui_BookInfo, QtTaskBase):
             bookInfo = BookMgr().GetBook(self.bookId)
             if bookInfo:
                 QtOwner().localFavoriteView.AddFavorites(bookInfo)
-                QtOwner().ShowMsg(Str.GetStr(Str.AddFavoriteSuc))
                 self.UpdateFavoriteIcon()
                 QtOwner().OpenLocalFavoriteFold(self.bookId)
 
@@ -732,7 +731,9 @@ class BookInfoView(QtWidgets.QWidget, Ui_BookInfo, QtTaskBase):
         toolMenu.exec(QCursor().pos())
 
     def NasUploadHandler(self, nasId, bookId):
-        QtOwner().nasView.AddNasUpload(nasId, bookId)
+        book = BookMgr().GetBook(bookId)
+        if book:
+            QtOwner().nasView.AddNasUploadCacheByBook(nasId, book)
         return
     
     def eventFilter(self, obj, event):

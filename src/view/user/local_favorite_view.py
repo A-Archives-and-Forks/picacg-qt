@@ -37,13 +37,20 @@ class LocalFavoriteView(QtWidgets.QWidget, Ui_LocalFavorite, QtTaskBase):
         self.maxSortId = 0
         self.bookList.isDelMenu = True
         self.bookList.isMoveMenu = True
+        self.bookList.isCanBatch = True
+
+        self.bookList.isLocalFavorite = True
         self.bookList.LoadCallBack = self.LoadNextPage
         self.bookList.DelCallBack = self.DelCallBack
         self.bookList.MoveCallBack = self.MoveCallBack
+
+        self.bookList.BatchDelCallBack = self.BatchDelCallBack
+        self.bookList.BatchMoveCallBack = self.BatchMoveCallBack
+
         self.resetCnt = 5
         self.sortIdCombox.currentIndexChanged.connect(self.RefreshDataFocus)
         self.sortKeyCombox.currentIndexChanged.connect(self.RefreshDataFocus)
-        self.lastMoveBookId = ""
+        self.lastMoveBookIds = []
         # TODO 判断是否使用本地
         # self.widget.hide()
         self.lineEdit.textChanged.connect(self.SearchTextChange)
@@ -173,12 +180,12 @@ class LocalFavoriteView(QtWidgets.QWidget, Ui_LocalFavorite, QtTaskBase):
             for info in oldBookList:
                 info2 = bookDict.get(info.id)
                 if info2:
-                    self.bookList.AddBookItemByBook(info2, isShowHistory=True)
+                    self.bookList.AddBookItemByDbBook(info2, isShowHistory=True)
                 else:
-                    self.bookList.AddBookItemByBook(info, isShowHistory=True)
+                    self.bookList.AddBookItemByDbBook(info, isShowHistory=True)
         else:
             for info in bookList:
-                self.bookList.AddBookItemByBook(info, isShowHistory=True)
+                self.bookList.AddBookItemByDbBook(info, isShowHistory=True)
         self.UpdatePageNum()
         return
 
@@ -203,12 +210,20 @@ class LocalFavoriteView(QtWidgets.QWidget, Ui_LocalFavorite, QtTaskBase):
         # self.RefreshDataFocus()
         pass
 
+    def BatchDelCallBack(self, bookIds):
+        for bookId in bookIds:
+            self.DelFavorites(bookId)
+            self.bookList.DelBookID(bookId)
+        # self.RefreshDataFocus()
+        pass
+
     def IsHave(self, bookId):
         return str(bookId) in self.allBookIds
 
     def AddFavorites(self, bookInfo):
         self.db.AddBookToDB(bookInfo)
         self.allBookIds.add(str(bookInfo.id))
+        QtOwner().ShowMsg(Str.GetStr(Str.AddFavoriteSuc))
 
     def AddFavoritesAndFidName(self, bookInfo):
         self.db.AddBookToDB(bookInfo)
@@ -252,12 +267,12 @@ class LocalFavoriteView(QtWidgets.QWidget, Ui_LocalFavorite, QtTaskBase):
         self.InitFolder()
         return isSuc
 
-    def UpdateBookFid(self, bookId, fids):
-        isSuc = self.db.UpdateBookFavoriteFid(bookId, fids)
+    def UpdateBookFid(self, bookList, fids):
+        for bookId in bookList:
+            self.db.UpdateBookFavoriteFid(bookId, fids)
         self.folderDict = self.db.LoadFold()
         self.fidBookList = self.db.LoadBookFold()
-
-        return isSuc
+        return True
 
     def LoadNextPage(self):
         self.bookList.page += 1
@@ -290,20 +305,27 @@ class LocalFavoriteView(QtWidgets.QWidget, Ui_LocalFavorite, QtTaskBase):
         return
 
     def MoveCallBack(self, bookId):
-        self.lastMoveBookId = bookId
+        self.lastMoveBookIds = [bookId]
         QtOwner().OpenLocalFavoriteFold(bookId, self.MoveOkBack, self.FoldChangeBack)
+        return
+
+    def BatchMoveCallBack(self, bookIds):
+        self.lastMoveBookIds = bookIds[:]
+        QtOwner().OpenLocalFavoriteFold(bookIds, self.MoveOkBack, self.FoldChangeBack)
         return
 
     def MoveOkBack(self):
         ## 如果检查移动的不在,则hidden book
         # self.RefreshDataFocus()
-        bookId = self.lastMoveBookId
+        bookIds = self.lastMoveBookIds
         name = self.folderBox.currentText()
         fid = self.GetFidByName(name)
-        if fid > 0:
-            isHave = bookId in self.fidBookList.get(fid, [])
-            if not isHave:
-                self.bookList.DelBookID(bookId)
+
+        for bookId in bookIds:
+            if fid > 0:
+                isHave = bookId in self.fidBookList.get(fid, [])
+                if not isHave:
+                    self.bookList.DelBookID(bookId)
         QtOwner().ShowMsg(Str.GetStr(Str.Ok))
         return
 

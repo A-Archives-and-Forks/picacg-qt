@@ -22,6 +22,7 @@ class ComicItemWidget(QWidget, Ui_ComicItem):
         self.picNum = 0
         self.category = ""
         self.tags = ""
+        self.rawBook = None
 
         self.index = 0
         self.url = ""
@@ -176,9 +177,20 @@ class ComicItemWidget(QWidget, Ui_ComicItem):
     def SetPictureErr(self, status):
         self.picLabel.setText(Str.GetStr(status))
 
+    @property
+    def isSelect(self):
+        return self.picLabel.isSelect
+
+    def SetSelect(self, select):
+        self.picLabel.SetSelect(select)
+
+    def SwitchSelect(self):
+        self.picLabel.SetSelect(not self.picLabel.isSelect)
+
     def paintEvent(self, event) -> None:
         if self.isShiled:
-            return
+            return QWidget.paintEvent(self, event)
         if self.url and not self.isLoadPicture and config.IsLoadingPicture:
             self.isLoadPicture = True
             self.PicLoad.emit(self.index)
+        return QWidget.paintEvent(self, event)

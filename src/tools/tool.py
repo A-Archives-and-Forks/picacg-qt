@@ -9,8 +9,6 @@ import uuid
 from hashlib import sha256
 from urllib.parse import quote
 
-from lxml import etree
-
 from config import config
 from config.setting import Setting
 from tools.log import Log
@@ -586,7 +584,10 @@ class ToolUtil(object):
         publish.text = config.ProjectName
 
         writer = etree.SubElement(root, "Writer")  # 作者
-        writer.text = bookInfo.author
+        if bookInfo.chineseTeam and bookInfo.author:
+            writer.text = bookInfo.author + "," + bookInfo.chineseTeam
+        else:
+            writer.text = bookInfo.author
 
         desc = etree.SubElement(root, "Summary")  # 摘要
         desc.text = bookInfo.description

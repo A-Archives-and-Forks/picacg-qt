@@ -44,6 +44,7 @@ class Book(object):
         self.description = ""     # 描述
         self.epsCount = 0         # 章节数
         self.pagesCount = 0
+        self.totalLikes = 0
         self.finished = False     # 是否完本
         self.updated_at = ""
         self.created_at = ""

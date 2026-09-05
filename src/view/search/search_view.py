@@ -393,7 +393,7 @@ class SearchView(QWidget, Ui_Search, QtTaskBase):
         self.bookList.UpdatePage(page, self.bookList.pages)
         self.label.setText(self.bookList.GetPageStr())
         for v in books:
-            self.bookList.AddBookItemByBook(v)
+            self.bookList.AddBookItemByDbBook(v)
         # self.CheckCategoryShowItem()
 
     # def ClickCategoryListItem(self, item):

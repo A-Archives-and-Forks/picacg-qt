@@ -10,7 +10,7 @@ from qt_owner import QtOwner
 from server import req, Status
 from server.sql_server import SqlServer
 from task.qt_task import QtTaskBase
-from tools.book import BookMgr
+from tools.book import BookMgr, Book
 from tools.str import Str
 from view.download.download_all_item import DownloadAllItem
 
@@ -94,14 +94,26 @@ class DownloadAllView(QtWidgets.QWidget, Ui_DownloadAll, QtTaskBase):
             self.tableWidget.removeRow(i-1)
 
         self.task.clear()
-        for task in books:
-            if hasattr(task, "tags") and isinstance(task.tags, list):
-                tags = ",".join(task.tags)
-            elif hasattr(task, "tags") and isinstance(task.tags, str):
-                tags = task.tags
+        for book in books:
+            assert isinstance(book, Book)
+            if isinstance(book.tags, list):
+                tags = ",".join(book.tags)
             else:
-                tags = ""
-            if QtOwner().IsInFilter(task.category, tags, task.title):
+                tags = book.tags
+
+            if isinstance(book.categories, list):
+                category = ",".join(book.categories)
+            else:
+                category = book.categories
+
+            task = DownloadAllItem()
+            task.bookId = book.id
+            task.tags = tags
+            task.pages = book.pagesCount
+            task.category = category
+            task.title = book.title
+
+            if QtOwner().IsInFilter(category, tags, task.title):
                 task.isAll = False
                 task.isAllChip = False
             self.task[task.bookId] = task
