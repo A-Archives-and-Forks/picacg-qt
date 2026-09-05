@@ -164,6 +164,7 @@ class LocalFavoriteView(QtWidgets.QWidget, Ui_LocalFavorite, QtTaskBase):
             sql, _, _ = SqlServer.Search2(
                 self.searchText, True, True, True, True, False,
                 True, [], -1, sortKey - 1, sortId, False, bookIds)
+            
             self.AddSqlTask("book", sql, SqlServer.TaskTypeSelectBook, callBack=self.SearchLocalBack, backParam=bookList)
         else:
             self.SearchLocalBack(bookList, bookList)

@@ -615,7 +615,7 @@ class SqlServer(Singleton):
             sql = sql.replace(", share_id", "")
         if isFinish:
             sql += " and finished=1 "
-        if limitIds:
+        if not limitIds is None:
             limitIds = ["'"+v+"'" for v in limitIds]
             sql += " and id in ({})".format(",".join(limitIds))
 
