@@ -104,9 +104,11 @@ jobs:
         brew install create-dmg
     - name: Build 
       run: |
+        python script/build_qrc.py
         cd src
         cd db
         unzip -o book.zip
+        rm book.zip
         cd ..
         cp ../res/icon/Icon.icns ./
         pyinstaller --target-architecture=universal2 --clean --onedir --name PicACG \
@@ -180,9 +182,11 @@ jobs:
         brew install create-dmg
     - name: Build 
       run: |
+        python script/build_qrc.py
         cd src
         cd db
         unzip -o book.zip
+        rm book.zip
         cd ..
         cp ../res/icon/Icon.icns ./
         pyinstaller --target-architecture=universal2 --clean --onedir --name PicACG \
@@ -249,9 +253,11 @@ jobs:
           Remove-Item "upx.zip"
       - name: Build
         run: |
+          python script/build_qrc.py
           cd src
           cd db
           7z x book.zip
+          Remove-Item book.zip
           cd ..
           Copy-Item ..\res\icon\icon.ico .         
           pyinstaller --hidden-import=_cffi_backend --collect-all curl_cffi -F -w -i icon.ico start.py --upx-dir "D:\upx-5.0.1-win64"
@@ -318,9 +324,11 @@ jobs:
           Remove-Item "upx.zip"
       - name: Build
         run: |
+          python script/build_qrc.py
           cd src
           cd db 
           7z x book.zip
+          Remove-Item book.zip
           cd ..
           Copy-Item ..\res\icon\icon.ico .
           pyinstaller --hidden-import=_cffi_backend --collect-all curl_cffi -F -w -i icon.ico start.py --upx-dir "D:\upx-5.0.1-win64"

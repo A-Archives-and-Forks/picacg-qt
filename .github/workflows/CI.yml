@@ -42,9 +42,11 @@ jobs:
         brew install create-dmg
     - name: Build
       run: |
+        python script/build_qrc.py
         cd src
         cd db
         unzip -o book.zip
+        rm book.zip
         cd ..
         cp ../res/icon/Icon.icns ./
         pyinstaller --target-architecture=universal2 --clean --onedir --name PicACG \
@@ -101,9 +103,11 @@ jobs:
 
     - name: Build
       run: |
+        python script/build_qrc.py
         cd src
         cd db
         7z x book.zip
+        Remove-Item "book.zip"
         cd ..
 
         cp ..\res\icon\icon.ico .\
@@ -142,10 +146,12 @@ jobs:
         pip install -r src/requirements.txt
     - name: Build
       run: |
+        python script/build_qrc.py
         cd src
         pyinstaller --hidden-import=_cffi_backend --collect-all curl_cffi -w start.py
         cd db
         unzip -o book.zip
+        rm book.zip
         cd ..
         cd dist
         mkdir -p picacg.AppRun/usr/bin
