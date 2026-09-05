@@ -60,7 +60,7 @@ class SearchView(QWidget, Ui_Search, QtTaskBase):
         self.lastText = "--1"
         self.hiddenNum = 0
         self.searchLabel.installEventFilter(self)
-        self.someDownButton.clicked.connect(self.bookList.OpenBookDownloadAll)
+        # self.someDownButton.clicked.connect(self.bookList.OpenBookDownloadAll)
 
         self.cacheRecommend = {}
 

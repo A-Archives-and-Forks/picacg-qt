@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QHeaderView, QTableWidgetItem, QAbstractItemView, 
 from interface.ui_download_all import Ui_DownloadAll
 from qt_owner import QtOwner
 from server import req, Status
-from server.sql_server import SqlServer
+from server.sql_server import SqlServer, DbBook
 from task.qt_task import QtTaskBase
 from tools.book import BookMgr, Book
 from tools.str import Str
@@ -95,7 +95,7 @@ class DownloadAllView(QtWidgets.QWidget, Ui_DownloadAll, QtTaskBase):
 
         self.task.clear()
         for book in books:
-            assert isinstance(book, Book)
+            assert isinstance(book, (Book, DbBook))
             if isinstance(book.tags, list):
                 tags = ",".join(book.tags)
             else:

@@ -48,7 +48,7 @@ Issues1 = "https://github.com/tonquer/picacg-qt/issues"
 
 UpdateVersion = "v1.5.5"
 RealVersion = "v1.5.5"
-TimeVersion = "2026-8-30"
+TimeVersion = "2026-9-5"
 DbVersion = ""
 
 Waifu2xVersion = "1.2.0"

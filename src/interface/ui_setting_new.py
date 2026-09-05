@@ -88,7 +88,7 @@ class Ui_SettingNew(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, -1117, 727, 3120))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, -346, 727, 3121))
         self.scrollAreaWidgetContents.setStyleSheet(u"")
         self.verticalLayout_4 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
@@ -349,6 +349,10 @@ class Ui_SettingNew(object):
         self.scaleBox.setValue(100)
 
         self.horizontalLayout_4.addWidget(self.scaleBox)
+
+        self.horizontalSpacer_10 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_4.addItem(self.horizontalSpacer_10)
 
 
         self.verticalLayout_22.addLayout(self.horizontalLayout_4)
